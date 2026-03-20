@@ -1,0 +1,103 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="About - Portfolio">
+    <main class="about">
+        <section class="about-introduction">
+            <h1 class="about-title">About Me</h1>
+            <p class="about-description">
+                現在、Webフロントエンドの技術を基礎から学んでいます。<br />
+                一つひとつの技術を確実に身につけ、丁寧なものづくりを目指しています。
+            </p>
+        </section>
+        <section class="about-skills">
+            <h2 class="about-section-heading">Learning</h2>
+            <ul class="about-skills-list">
+                <li class="about-skills-item">HTML</li>
+                <li class="about-skills-item">CSS</li>
+                <li class="about-skills-item">Astro</li>
+            </ul>
+        </section>
+        <section class="about-goals">
+            <h2 class="about-section-heading">Next Steps</h2>
+            <ul class="about-goals-list">
+                <li class="about-goals-item">JavaScript</li>
+                <li class="about-goals-item">React</li>
+                <li class="about-goals-item">TypeScript</li>
+            </ul>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    .about {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 80px 24px;
+        gap: 48px;
+    }
+
+    .about-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 300;
+    }
+
+    .about-description {
+        text-align: center;
+        margin-top: 20px;
+        color: var(--color-text-muted);
+        line-height: 2;
+    }
+
+    .about-introduction {
+        grid-column: span 2;
+    }
+
+    .about-section-heading {
+        font-size: 1rem;
+        font-weight: 300;
+        letter-spacing: 0.08em;
+        color: var(--color-text-muted);
+    }
+
+    .about-skills-list,
+    .about-goals-list {
+        margin-top: 16px;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .about-skills-item,
+    .about-goals-item {
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        background: var(--color-glass-bg);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: var(--color-text-main);
+        transition: all 0.4s ease-out;
+    }
+
+    .about-skills-item:hover,
+    .about-goals-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(36, 45, 73, 0.08);
+        color: var(--color-accent-light);
+    }
+
+    @media (max-width: 768px) {
+        .about {
+            grid-template-columns: 1fr;
+        }
+
+        .about-introduction {
+            grid-column: span 1;
+        }
+    }
+</style>
