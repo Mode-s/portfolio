@@ -1,0 +1,19 @@
+:root {
+  --color-glass-bg: rgba(245, 247, 250, 0.65);
+  --color-text-main: hsl(225, 30%, 28%);
+  --color-text-muted: hsl(225, 20%, 55%);
+  --color-accent-light: hsl(45, 80%, 70%);
+  --color-accent-blush: hsl(340, 60%, 80%);
+}
+
+body {
+  font-family: 'Fraunces', 'Klee One', serif;
+  color: var(--color-text-main);
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.06rem;
+    line-height: 1.4;
+}
