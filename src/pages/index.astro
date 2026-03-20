@@ -1,19 +1,48 @@
 ---
-import '../styles/reset.css';
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Klee+One&display=swap" rel="stylesheet" />
-    <title>Portfolio</title>
-  </head>
-  <body>
-    <h1>Hello, World</h1>
-    <p>ポートフォリオサイトを構築中です。</p>
-  </body>
-</html>
+<Layout title="Portfolio">
+	<main class="hero">
+		<section class="hero-content">
+			<h1 class="hero-title">Hello, I'm Learning</h1>
+			<p class="hero-description">
+				現在、Webフロントエンドの基礎を学習中です。<br />
+				HTML・CSSから一歩ずつ、確実に。
+			</p>
+		</section>
+	</main>
+</Layout>
+
+<style>
+	.hero {
+		min-height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 24px;
+		background: url('/public/background.jpg') center / cover no-repeat;
+	}
+
+	.hero-content {
+		max-width: 560px;
+		padding: 48px 40px;
+		text-align: center;
+		background: var(--color-glass-bg);
+		backdrop-filter: blur(12px);
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		border-radius: 24px;
+		box-shadow: 0 8px 32px rgba(36, 45, 73, 0.08);
+	}
+
+	.hero-title {
+		font-size: 2.4rem;
+		font-weight: 300;
+	}
+
+	.hero-description {
+		margin-top: 20px;
+		font-size: 1rem;
+		color: var(--color-text-muted);
+	}
+</style>
