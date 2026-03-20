@@ -3,46 +3,66 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Portfolio">
-	<main class="hero">
-		<section class="hero-content">
-			<h1 class="hero-title">Hello, I'm Learning</h1>
-			<p class="hero-description">
-				現在、Webフロントエンドの基礎を学習中です。<br />
-				HTML・CSSから一歩ずつ、確実に。
-			</p>
-		</section>
+	<main class="gallery">
+		<figure class="gallery-frame">
+			<div class="gallery-painting"></div>
+			<figcaption class="gallery-caption">
+				<h1 class="gallery-caption-title">Learning in Public</h1>
+				<hr class="gallery-caption-divider" />
+				<p class="gallery-caption-description">HTML / CSS / Astro - 2026</p>
+			</figcaption>
+		</figure>
 	</main>
 </Layout>
 
 <style>
-	.hero {
+	.gallery {
 		min-height: 100vh;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		background: hsl(35, 20%, 88%);
 		padding: 24px;
+	}
+
+	.gallery-frame {
+		max-width: 840px;
+		width: 100%;
+	}
+	
+	.gallery-painting {
+		width: 100%;
+		aspect-ratio: 4 / 3;
 		background: url('/public/background.jpg') center / cover no-repeat;
+		border-radius: 2px;
+		box-shadow: 0 2px 20px rgba(36, 45, 73, 0.12),
+				inset 0 0 0 6px hsl(35, 15%, 78%),
+				inset 0 0 0 8px rgba(36, 45, 73, 0.08);
 	}
 
-	.hero-content {
-		max-width: 560px;
-		padding: 48px 40px;
+	.gallery-caption {
+		margin-top: 28px;
 		text-align: center;
-		background: var(--color-glass-bg);
-		backdrop-filter: blur(12px);
-		border: 1px solid rgba(255, 255, 255, 0.4);
-		border-radius: 24px;
-		box-shadow: 0 8px 32px rgba(36, 45, 73, 0.08);
 	}
 
-	.hero-title {
-		font-size: 2.4rem;
+	.gallery-caption-title {
+		font-size: 1.1rem;
 		font-weight: 300;
+		letter-spacing: 0.06em;
 	}
 
-	.hero-description {
-		margin-top: 20px;
-		font-size: 1rem;
+	.gallery-caption-description {
+		margin-top: 8px;
+		font-size: 0.8rem;
 		color: var(--color-text-muted);
+		letter-spacing: 0.04em;
+	}
+
+	.gallery-caption-divider {
+		width: 20px;
+		border: none;
+		border-top: 0.5px solid var(--color-text-main);
+		margin: 12px auto;
+		opacity: 0.3;
 	}
 </style>
