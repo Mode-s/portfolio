@@ -1,0 +1,58 @@
+---
+---
+<header class="header">
+    <a href="/" class="header-logo">Portfolio</a>
+    <nav class="header-nav">
+        <a href="/" class="header-nav-link">Home</a>
+        <a href="/about" class="header-nav-link">About</a>
+        <a href="/works" class="header-nav-link">Works</a>
+    </nav>
+</header>
+
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+    }
+
+    .header-nav {
+        display: flex;
+        gap: 32px;
+    }
+
+    .header-logo {
+        text-decoration: none;
+        letter-spacing: 0.06em;
+        color: var(--color-text-main);
+        font-size: 1rem;
+        font-weight: 300;
+    }
+
+    .header-nav-link {
+        text-decoration: none;
+        letter-spacing: 0.06em;
+        color: var(--color-text-muted);
+        font-size: 0.85rem;
+        transition: color 0.4s ease-out;
+    }
+
+    .header-nav-link:hover {
+        color: var(--color-accent-light);
+    }
+
+    @media (max-width: 600px) {
+        .header {
+            padding: 16px 20px;
+        }
+
+        .header-nav {
+            gap: 16px;
+        }
+
+        .header-nav-link {
+            font-size: 0.75rem;
+        }
+    }
+</style>
