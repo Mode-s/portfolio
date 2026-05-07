@@ -1,0 +1,158 @@
+---
+---
+
+<header class="header" data-js="header">
+  <nav class="header-nav">
+    <ul class="header-nav-list" data-js="header-nav-list">
+      <li><a href="/#hero" class="header-nav-link">HOME</a></li>
+      <li><a href="/#works" class="header-nav-link">WORKS</a></li>
+      <li><a href="/#about" class="header-nav-link">ABOUT</a></li>
+      <li><a href="/#contact" class="header-nav-link">CONTACT</a></li>
+    </ul>
+    <div class="header-nav-current" data-js="header-nav-current" aria-hidden="true"></div>
+  </nav>
+  <ul class="header-sns">
+    <li>
+      <a class="header-sns-link" href="" target="_blank" rel="noopener noreferrer">
+        <span class="header-sns-label">Twitter</span>
+        <span class="header-sns-arrow">↗</span>
+      </a>
+    </li>
+    <li>
+      <a class="header-sns-link" href="google.com" target="_blank" rel="noopener noreferrer">
+        <span class="header-sns-label">Instagram</span>
+        <span class="header-sns-arrow" aria-hidden="true">↗</span>
+      </a>
+    </li>
+  </ul>
+</header>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  //──────────────────  Header  ──────────────────//
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: $z-base + 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 16px 24px;
+  }
+
+  //──────────────────  Header nav  ──────────────────//
+  .header-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  //──────────────────  Header nav list  ──────────────────//
+  .header-nav-list {
+    position: relative; // インジケーターの基準
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    border: 0.5px solid $c-text;
+    border-radius: 5px;
+  }
+
+  //──────────────────  Header nav current (active indicator)  ──────────────────//
+  .header-nav-current {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    z-index: 0;
+    width: var(--current-w, 0);
+    height: calc(100% - 7px);
+    transform: translateX(var(--current-x, 3px));
+    background-color: $c-text;
+    border-radius: 5px;
+    transition: transform 0.3s ease, width 0.3s ease;
+    pointer-events: none;
+
+  }
+
+  //──────────────────  Header nav link  ──────────────────//
+  .header-nav-link {
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 6px 16px;
+    color: $c-text;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    transition: color 0.3s ease;
+
+    &.is-active {
+      color: #000; // ───────────────────────────あとで変更
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+  }
+
+  //──────────────────  Header sns  ──────────────────//
+  .header-sns {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  //──────────────────  Header sns link  ──────────────────//
+  .header-sns-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 12px;
+    border: 0.5px solid $c-text;
+    border-radius: 20px;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+  }
+</style>
+
+<script>
+  const list = document.querySelector<HTMLElement>('[data-js="header-nav-list"]');
+  const current = document.querySelector<HTMLElement>('[data-js="header-nav-current"]');
+  const links = list?.querySelectorAll<HTMLAnchorElement>('.header-nav-link');
+
+  if (list && current && links && links.length > 0) {
+    const updateCurrent = (target: HTMLElement) => {
+      const targetRect = target.getBoundingClientRect();
+      const listRect = list.getBoundingClientRect();
+      const x = targetRect.left - listRect.left;
+
+      current.style.setProperty('--current-x', `${x}px`);
+      current.style.setProperty('--current-w', `${targetRect.width}px`);
+
+      links.forEach((link) => link.classList.toggle('is-active', link === target));
+    };
+
+    requestAnimationFrame(() => updateCurrent(links[0]));
+
+
+    links.forEach((link) => {
+      link.addEventListener('click', () => updateCurrent(link));
+    });
+
+
+    window.addEventListener('resize', () => {
+      const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
+      if (active) updateCurrent(active);
+    });
+  }
+</script>

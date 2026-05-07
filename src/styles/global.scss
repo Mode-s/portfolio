@@ -1,0 +1,8 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+body {
+  color: $c-text;
+  font-size: $f-base;
+  line-height: 1.8;
+}
