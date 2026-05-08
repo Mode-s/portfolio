@@ -352,10 +352,12 @@
       if (active) updateCurrent(active);
     });
 
-    // ── スクランブルはここで1回だけ呼ぶ（イベントリスナーの外）──
-    links.forEach((link, i) => {
-      scramble(link, 500, i * 100);
-    });
+    // ── ローディング完了後にスクランブル発火 ──
+    window.addEventListener('loading:complete', () => {
+      links.forEach((link, i) => {
+        scramble(link, 500, i * 100);
+      });
+    }, { once: true });
   }
 
   const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');

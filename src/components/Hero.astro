@@ -110,6 +110,12 @@
   const label = document.querySelector<HTMLElement>('.hero-label');
   const scroll = document.querySelector<HTMLElement>('.hero-scroll');
 
-  if (label) scramble(label, 800, 0);
-  if (scroll) scramble(scroll, 1200, 200);
+
+  const init = () => {
+    if (label) scramble(label, 800, 0);
+    if (scroll) scramble(scroll, 1200, 200);
+  }
+
+  // ローディング完了後に発火
+  window.addEventListener('loading:complete', init, { once: true });
 </script>
