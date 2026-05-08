@@ -319,6 +319,8 @@
 </style>
 
 <script>
+  import { scramble } from '../utils/scramble';
+
   const list = document.querySelector<HTMLElement>('[data-js="header-nav-list"]');
   const current = document.querySelector<HTMLElement>('[data-js="header-nav-current"]');
   const links = list?.querySelectorAll<HTMLAnchorElement>('.header-nav-link');
@@ -333,6 +335,8 @@
       current.style.setProperty('--current-w', `${targetRect.width}px`);
 
       links.forEach((link) => link.classList.toggle('is-active', link === target));
+
+
     };
 
     requestAnimationFrame(() => updateCurrent(links[0]));
@@ -346,6 +350,11 @@
     window.addEventListener('resize', () => {
       const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
       if (active) updateCurrent(active);
+    });
+
+    // ── スクランブルはここで1回だけ呼ぶ（イベントリスナーの外）──
+    links.forEach((link, i) => {
+      scramble(link, 500, i * 100);
     });
   }
 
@@ -363,6 +372,11 @@
       hamburger.setAttribute('aria-label', 'メニューを閉じる');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden'; // スクロールロック
+
+      // ── オーバーレイリンクにスクランブル ──
+      overlayLinks?.forEach((link, i) => {
+        scramble(link, 600, i * 80);
+      });
     };
 
     const close = () => {

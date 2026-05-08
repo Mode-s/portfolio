@@ -105,26 +105,11 @@
 </style>
 
 <script>
-  import gsap from 'gsap';
+  import { scramble } from '../utils/scramble';
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const label = document.querySelector<HTMLElement>('.hero-label');
+  const scroll = document.querySelector<HTMLElement>('.hero-scroll');
 
-  if (prefersReducedMotion) {
-    gsap.set(['.hero-title', '.hero-scroll'], { opacity: 1 });
-  } else {
-    gsap.from('.hero-title', {
-      opacity: 0,
-      y: 20,
-      duration: 0.8,
-      ease: 'power2.out',
-    });
-
-    gsap.from('.hero-scroll', {
-      opacity: 0,
-      y: 20,
-      duration: 0.8,
-      ease: 'power2.out',
-      delay: 0.4,
-    });
-  }
+  if (label) scramble(label, 800, 0);
+  if (scroll) scramble(scroll, 1200, 200);
 </script>
