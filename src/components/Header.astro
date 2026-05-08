@@ -13,13 +13,25 @@
   </nav>
   <ul class="header-sns">
     <li>
-      <a class="header-sns-link" href="" target="_blank" rel="noopener noreferrer">
+      <a class="header-sns-link" href="" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <span class="header-sns-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </span>
         <span class="header-sns-label">Twitter</span>
         <span class="header-sns-arrow">↗</span>
       </a>
     </li>
     <li>
-      <a class="header-sns-link" href="google.com" target="_blank" rel="noopener noreferrer">
+      <a class="header-sns-link" href="google.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <span class="header-sns-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </span>
         <span class="header-sns-label">Instagram</span>
         <span class="header-sns-arrow" aria-hidden="true">↗</span>
       </a>
@@ -102,6 +114,7 @@
   .header-sns {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 5px;
   }
 
@@ -109,19 +122,71 @@
   .header-sns-link {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 4px 12px;
+    height: 30px;
     border: 0.5px solid $c-text;
     border-radius: 20px;
     font-size: 0.625rem;
     letter-spacing: 0.06em;
-    transition: opacity 0.2s ease;
+    overflow: hidden;
+  }
 
-    &:hover {
-      opacity: 0.7;
+  //──────────────────  Header sns icon  ──────────────────//
+  .header-sns-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  //──────────────────  Header sns label (通常時は0幅で隠す)  ──────────────────//
+  .header-sns-label {
+    max-width: 0;
+    padding-right: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: max-width 0.3s ease, padding-left 0.3s ease, opacity 0.3s ease;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Header sns label (通常時は0幅で隠す)  ──────────────────//
+  .header-sns-arrow {
+    flex-shrink: 0;
+    max-width: 0;
+    padding-right: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-width 0.3s ease, padding-right 0.3s ease, opacity 0.3s ease;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Header sns link :hover  ──────────────────//
+  .header-sns-link:hover {
+
+    .header-sns-label {
+      max-width: 100px;
+      padding-right: 6px;
+      opacity: 1;
     }
 
+    .header-sns-arrow {
+      max-width: 1em;
+      padding-right: 15px;
+      opacity: 1;
+    }
   }
 </style>
 

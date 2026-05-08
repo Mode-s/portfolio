@@ -1,0 +1,6 @@
+// アニメーション軽減設定（モーション酔い・前庭障害への配慮）
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
