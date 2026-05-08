@@ -1,4 +1,19 @@
-// アニメーション軽減設定（モーション酔い・前庭障害への配慮）
+@use 'variables' as *;
+
+@mixin tablet {
+  @media (max-width: $break-tablet) {
+    @content;
+  }
+}
+
+@mixin sp {
+  @media (max-width: $break-sp) {
+    @content;
+  }
+}
+
+
+// アニメーション軽減設定
 @mixin reduced-motion {
   @media (prefers-reduced-motion: reduce) {
     @content;

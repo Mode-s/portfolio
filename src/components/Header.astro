@@ -11,6 +11,20 @@
     </ul>
     <div class="header-nav-current" data-js="header-nav-current" aria-hidden="true"></div>
   </nav>
+  <!-- Tablet / SP : ハンバーガーボタン -->
+  <button class="header-hamburger" data-js="header-hamburger" aria-label="メニューを開く" aria-expanded="false" type="button">
+    <span class="header-hamburger-line" aria-hidden="true"></span>
+    <span class="header-hamburger-line" aria-hidden="true"></span>
+  </button>
+  <!-- Tablet/SP：全画面オーバーレイ -->
+  <div class="header-overlay" data-js="header-overlay" aria-hidden="true">
+    <ul class="header-overlay-list">
+      <li><a href="/#hero" class="header-overlay-link">HOME</a></li>
+      <li><a href="/#works" class="header-overlay-link">WORKS</a></li>
+      <li><a href="/#about" class="header-overlay-link">ABOUT</a></li>
+      <li><a href="/#contact" class="header-overlay-link">CONTACT</a></li>
+    </ul>
+  </div>
   <ul class="header-sns">
     <li>
       <a class="header-sns-link" href="" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
@@ -61,6 +75,10 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+
+    @include tablet {
+      display: none;
+    }
   }
 
   //──────────────────  Header nav list  ──────────────────//
@@ -105,9 +123,118 @@
     }
 
     &:hover {
-      opacity: 0.7;
+      opacity: 0.7; // ───────────────────────────あとで変更
     }
 
+  }
+
+  //──────────────────  Header Hamburger  ──────────────────//
+  .header-hamburger {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 100px; // ラインの長さ調整
+    height: 44px;
+    cursor: pointer;
+
+    @include tablet {
+      display: flex;
+    }
+  }
+
+  //──────────────────  Header hamburger line  ──────────────────//
+  .header-hamburger-line {
+    display: block;
+    width: 100%;
+    height: 0.5px;
+    background-color: $c-text;
+    transform-origin: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+  //──────────────────  Header hamburger open state  ──────────────────//
+  .header-hamburger.is-open {
+    z-index: $z-base + 4;
+    .header-hamburger-line:nth-child(1) {
+      transform: translateY(3.5px) rotate(10deg);
+    }
+    .header-hamburger-line:nth-child(2) {
+      transform: translateY(-3.5px) rotate(-10deg);
+    }
+  }
+
+  //──────────────────  Header overlay  ──────────────────//
+  .header-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: $z-base + 3; // ヘッダー(+2)より1段上
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 10, 8, 0.96);
+    opacity: 0;
+    visibility: hidden; // opacity:0だけだとキーボード操作が貫通するため
+    pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Header overlay open state  ──────────────────//
+  .header-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  //──────────────────  Header overlay list  ──────────────────//
+  .header-overlay-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  //──────────────────  Header overlay link  ──────────────────//
+  .header-overlay-link {
+    position: relative;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 0.7em;
+      background-color: rgba(164, 245, 231, 0.35);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+
+      @include reduced-motion {
+        transition: none;
+      }
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+    } 
   }
 
   //──────────────────  Header sns  ──────────────────//
@@ -187,6 +314,7 @@
       padding-right: 15px;
       opacity: 1;
     }
+
   }
 </style>
 
@@ -218,6 +346,52 @@
     window.addEventListener('resize', () => {
       const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
       if (active) updateCurrent(active);
+    });
+  }
+
+  const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');
+  const overlay = document.querySelector<HTMLElement>('[data-js="header-overlay"]');
+  const overlayLinks = overlay?.querySelectorAll<HTMLAnchorElement>('.header-overlay-link');
+
+  if (hamburger && overlay) {
+
+  // ── 開閉の核となる処理 ──────────────────────────────────
+    const open = () => {
+      hamburger.classList.add('is-open');
+      overlay.classList.add('is-open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      hamburger.setAttribute('aria-label', 'メニューを閉じる');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden'; // スクロールロック
+    };
+
+    const close = () => {
+      hamburger.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-label', 'メニューを開く');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = ''; // スクロールロック解除
+    };
+
+    const toggle = () => {
+      hamburger.classList.contains('is-open') ? close() : open();
+    };
+
+    // ── イベント登録 ─────────────────────────────────────────
+    hamburger.addEventListener('click', toggle);
+
+    // オーバーレイリンクをクリックしたら閉じる
+    overlayLinks?.forEach((link) => {
+      link.addEventListener('click', close);
+    });
+
+    // ESCキーで閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && hamburger.classList.contains('is-open')) {
+        close();
+        hamburger.focus(); // フォーカスをボタンに戻す
+      }
     });
   }
 </script>
