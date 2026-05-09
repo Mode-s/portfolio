@@ -1,10 +1,129 @@
 ---
 ---
-<section class="section contact">
-
+<section class="section contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-content">
+      <p class="contact-label" data-js="contact-label">contact</p>
+      <h2 class="contact-title">contact</h2>
+    </div>
+    <ul class="contact-list">
+      <li>
+        <a class="contact-link" href="mailto:hello@example.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"/>
+            <path d="M2 7l10 7 10-7"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a class="contact-link" href="" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a class="contact-link" href="" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </div>
 </section>
 
 <style lang="scss">
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
+
+  //──────────────────  Contact  ──────────────────//
+  .contact {
+    padding: 40px;
+  }
+
+  //──────────────────  Contact inner  ──────────────────//
+  .contact-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  Contact label  ──────────────────//
+  .contact-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  Contact label  ──────────────────//
+  .contact-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Contact title  ──────────────────//
+  .contact-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  //──────────────────  Contact list  ──────────────────//
+  .contact-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  //──────────────────  Contact link  ──────────────────//
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 0.5px solid $c-text;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background-color: $c-text; // 後で変更
+      color: $c-bg; // 後で変更
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
 </style>
+
+<script>
+  import { scramble } from '../utils/scramble';
+
+  const label = document.querySelector<HTMLElement>('[data-js="contact-label"]');
+
+  if (label) {
+    // セクションが見えたタイミングで scramble を発火（一度だけ）
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          scramble(label, 800, 0);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 }); // ラベルが30%見えたら発火
+
+    observer.observe(label);
+  }
+</script>
