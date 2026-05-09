@@ -6,6 +6,7 @@
       <p class="contact-label" data-js="contact-label">contact</p>
       <h2 class="contact-title">contact</h2>
     </div>
+    <p class="contact-text">お仕事のご依頼・ご相談は、メールまたは SNS の DM までお気軽にお寄せください。</p>
     <ul class="contact-list">
       <li>
         <a class="contact-link" href="mailto:hello@example.com" aria-label="Email">
@@ -69,6 +70,18 @@
     font-size: 3.5rem;
     letter-spacing: 0.04em;
     line-height: 1.2;
+  }
+
+  //──────────────────  Contact text  ──────────────────//
+  .contact-text {
+    text-align: center;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+
+    @include tablet {
+      font-size: 0.4rem;
+    }
   }
 
   //──────────────────  Contact list  ──────────────────//
