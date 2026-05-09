@@ -2,6 +2,7 @@
 @use 'mixins' as *;
 
 body {
+  background: $c-bg;
   color: $c-text;
   font-size: $f-base;
   line-height: 1.8;
