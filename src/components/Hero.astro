@@ -3,7 +3,7 @@
 
 <section class="hero">
   <a href="/" class="hero-logo" aria-label="ホームへ戻る">
-    <img src="/images/logo1.svg" alt="ロゴ" />
+    <img class="hero-logo-image" src="/images/logo1.svg" alt="ロゴ" />
   </a>
   <div class="hero-inner">
     <div class="hero-content">
@@ -46,9 +46,10 @@
     top: 24px;
     left: 24px;
     z-index: $z-base + 2;
-    img {
-    height: 50px; // ← サイズはここで調整
-    width: auto;
+
+    .hero-logo-image {
+      height: 50px; // ← サイズはここで調整
+      width: auto;
   }
   }
   //――――――――――――――――――――――――――　Hero inner ――――――――――――――――――――――――――――//

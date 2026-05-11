@@ -1,10 +1,203 @@
 ---
+import { Image } from 'astro:assets';
+import profileImage from '../assets/images/profile.jpg';
 ---
 <section class="section about" id="about">
-
+  <div class="about-inner">
+    <div class="about-content">
+      <p class="about-label" data-js="about-label">about</p>
+      <h2 class="about-title">about</h2>
+    </div>
+    <div class="about-main">
+      <figure class="about-image">
+        <Image src={profileImage} alt="プロフィール写真" />
+      </figure>
+      <div class="about-body">
+        <p class="about-name">Mecha</p>
+        <p class="about-role">Front-End Developer</p>
+        <p class="about-bio">bio text bio text bio text bio text bio text bio text bio text </p>
+      </div>
+    </div>
+    <dl class="about-meta">
+      <div class="about-meta-row">
+        <dt class="about-meta-term">Based in</dt>
+        <dd class="about-meta-desc">Tokyo, Japan</dd>
+      </div>
+      <div class="about-meta-row">
+        <dt class="about-meta-term">Born</dt>
+        <dd class="about-meta-desc">2000</dd>
+      </div>
+      <div class="about-meta-row">
+        <dt class="about-meta-term">Experience</dt>
+        <dd class="about-meta-desc">3 months</dd>
+      </div>
+    </dl>
+  </div>
 </section>
 
 <style lang="scss">
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
+
+  //──────────────────  About  ──────────────────//
+  .about {
+    padding: 40px;
+  }
+
+  //──────────────────  About inner  ──────────────────//
+  .about-inner {
+    position: relative; // 後で追加する装飾用
+    margin: 0 auto;
+  }
+
+  //──────────────────  About content  ──────────────────//
+  .about-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  About main  ──────────────────//
+  .about-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+    margin-top: 60px;
+
+    @include tablet {
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+  }
+
+  //──────────────────  About image  ──────────────────//
+  .about-image {
+    flex-shrink: 0;
+    width: 280px;
+    border: 0.5px solid $c-text;
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @include tablet {
+      width: 220px;
+    }
+
+    @include sp {
+      width: 180px;
+    }
+  }
+
+  //──────────────────  About body  ──────────────────//
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 24px;
+  }
+
+  //──────────────────  About label  ──────────────────//
+  .about-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  About title  ──────────────────//
+  .about-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+
+    @include sp {
+      font-size: 2.5rem;
+    }
+  }
+
+  //──────────────────  About name  ──────────────────//
+  .about-name {
+    font-size: 1.15rem;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+  }
+
+  //──────────────────  About role  ──────────────────//
+  .about-role {
+    font-size: 1.125rem;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  About bio  ──────────────────//
+  .about-bio {
+    font-size: 0.875rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  About meta  ──────────────────//
+  .about-meta {
+    border-top: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-bottom: 0.5px solid rgba(204, 200, 190, 0.3);
+    margin-top: 80px;
+
+    @include tablet {
+      margin-top: 40px;
+    }
+  }
+
+  //──────────────────  About meta row  ──────────────────//
+  .about-meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 12px 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+
+    & + & {
+      border-top: 0.5px solid rgba(204, 200, 190, 0.15);
+    }
+  }
+
+  //──────────────────  About meta term  ──────────────────//
+  .about-meta-term {
+    flex-shrink: 0;
+    width: 100px;
+    opacity: 0.6;
+
+    @include sp {
+      width: 80px;
+    }
+  }
+
+  //──────────────────  About meta desc  ──────────────────//
+  .about-meta-desc {
+    flex: 1;
+  }
 </style>
+
+<script>
+
+import { scramble } from '../utils/scramble';
+
+  const label = document.querySelector<HTMLElement>('[data-js="about-label"]');
+
+  if (label) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          scramble(label, 800, 0);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    observer.observe(label);
+  }
+</script>
