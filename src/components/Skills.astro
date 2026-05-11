@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 ---
 <section class="section skills" id="skills">
   <div class="skills-inner">
@@ -6,10 +7,187 @@
       <p class="skills-label" data-js="skills-label">skills</p>
       <h2 class="skills-title">skills</h2>
     </div>
+    <div class="skills-groups">
+      <div class="skills-group">
+        <p class="skills-group-label">Currently using</p>
+        <ul class="skills-list">
+          <li class="skills-item">
+            <Icon name="simple-icons:html5" class="skills-item-icon" />
+            <span class="skills-item-name">HTML</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:css" class="skills-item-icon" />
+            <span class="skills-item-name">CSS</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:javascript" class="skills-item-icon" />
+            <span class="skills-item-name">JavaScript</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:git" class="skills-item-icon" />
+            <span class="skills-item-name">Git</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:github" class="skills-item-icon" />
+            <span class="skills-item-name">GitHub</span>
+          </li>
+        </ul>
+      </div>
+      <div class="skills-group">
+        <p class="skills-group-label">Learning</p>
+        <ul class="skills-list">
+          <li class="skills-item">
+            <Icon name="simple-icons:typescript" class="skills-item-icon" />
+            <span class="skills-item-name">TypeScript</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:react" class="skills-item-icon" />
+            <span class="skills-item-name">React</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:astro" class="skills-item-icon" />
+            <span class="skills-item-name">Astro</span>
+          </li>
+        </ul>
+      </div>
+      <div class="skills-group">
+        <p class="skills-group-label">To Learn</p>
+        <ul class="skills-list">
+          <li class="skills-item">
+            <Icon name="simple-icons:figma" class="skills-item-icon" />
+            <span class="skills-item-name">Figma</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:adobephotoshop" class="skills-item-icon" />
+            <span class="skills-item-name">Photoshop</span>
+          </li>
+          <li class="skills-item">
+            <Icon name="simple-icons:adobeillustrator" class="skills-item-icon" />
+            <span class="skills-item-name">Illustrator</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
 <style lang="scss">
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
+
+  //──────────────────  Skills  ──────────────────//
+  .skills {
+    padding: 40px;
+  }
+
+  //──────────────────  Skills inner  ──────────────────//
+  .skills-inner {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  //──────────────────  Skills content  ──────────────────//
+  .skills-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  Skills label  ──────────────────//
+  .skills-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7; 
+  }
+
+  //──────────────────  Skills title  ──────────────────//
+  .skills-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+
+    @include sp {
+      font-size: 2.5rem;
+    }
+  }
+
+  //──────────────────  Skills groups  ──────────────────//
+  .skills-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    margin-top: 60px;
+
+    @include tablet {
+      gap: 40px;
+    }
+  }
+
+  //──────────────────  Skills group  ──────────────────//
+  .skills-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  //──────────────────  Skills group label  ──────────────────//
+  .skills-group-label {
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid rgba(204, 200, 190, 0.3);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Skills list  ──────────────────//
+  .skills-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
+
+    @include tablet {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+  }
+
+  //──────────────────  Skills item  ──────────────────//
+  .skills-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  //──────────────────  Skills item icon  ──────────────────//
+  .skills-item-icon {
+   width: 24px;
+   height: 24px;
+  }
+
+  //──────────────────  Skills item name  ──────────────────//
+  .skills-item-name {
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+  }
+
 </style>
+
+<script>
+  import { scramble } from '../utils/scramble';
+
+  const label = document.querySelector<HTMLElement>('[data-js="skills-label"]');
+
+  if (label) {
+    // セクションが見えたタイミングで scramble を発火（一度だけ）
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          scramble(label, 800, 0);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    observer.observe(label);
+  }
+</script>
