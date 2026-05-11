@@ -1,0 +1,258 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+// 種別ラベルの表示用マップ（Projects.astro と同じ）
+const typeLabels = {
+  client: 'Client Work',
+  self: 'Self Project',
+};
+
+// 日付フォーマット変換（Projects.astro と同じ）
+const formatDate = (date: string) => date.replace('-', '.');
+---
+
+<BaseLayout title={`${project.data.title} | Umemoto Shota`}>
+  <article class="project-detail">
+
+    <a class="project-detail-back" href="/">← Projects</a>
+
+    <figure class="project-detail-hero">
+      <Image src={project.data.thumbnail} alt={project.data.title} />
+    </figure>
+
+    <div class="project-detail-body">
+      <div class="project-detail-meta">
+        <time class="project-detail-date" datetime={project.data.date}>
+          {formatDate(project.data.date)}
+        </time>
+        <span class="project-detail-type" data-type={project.data.type}>
+          {typeLabels[project.data.type]}
+        </span>
+      </div>
+
+      <h1 class="project-detail-title">{project.data.title}</h1>
+
+      <ul class="project-detail-tags">
+        {project.data.tech.map((tech) => (
+          <li class="project-detail-tag">{tech}</li>
+        ))}
+      </ul>
+
+      <div class="project-detail-content">
+        <Content />
+      </div>
+
+      {project.data.liveUrl && (
+        <div class="project-detail-links">
+          <a
+            class="project-detail-link"
+            href={project.data.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Live Demo ↗
+          </a>
+        </div>
+      )}
+    </div>
+
+  </article>
+</BaseLayout>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+  @use '../../styles/mixins' as *;
+
+//──────────────────  Project detail  ──────────────────//
+.project-detail {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 120px 40px 80px;
+
+  @include tablet {
+    padding: 100px 32px 60px;
+  }
+
+  @include sp {
+    padding: 80px 20px 40px;
+  }
+}
+
+//──────────────────  Project detail back  ──────────────────//
+.project-detail-back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 40px;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+//──────────────────  Project detail hero  ──────────────────//
+.project-detail-hero {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 0.5px solid rgba(204, 200, 190, 0.2);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+//──────────────────  Project detail body  ──────────────────//
+.project-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+//──────────────────  Project detail meta  ──────────────────//
+.project-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+//──────────────────  Project detail date  ──────────────────//
+.project-detail-date {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+//──────────────────  Project detail type  ──────────────────//
+.project-detail-type {
+  padding: 2px 8px;
+  border: 0.5px solid rgba(204, 200, 190, 0.4);
+  border-radius: 10px;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+//──────────────────  Project detail title  ──────────────────//
+.project-detail-title {
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+
+  @include sp {
+    font-size: 1.5rem;
+  }
+}
+
+//──────────────────  Project detail tags  ──────────────────//
+.project-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+//──────────────────  Project detail tag  ──────────────────//
+.project-detail-tag {
+  padding: 2px 8px;
+  border: 0.5px solid rgba(204, 200, 190, 0.3);
+  border-radius: 3px;
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+//──────────────────  Project detail content  ──────────────────//
+.project-detail-content {
+  :global(h2) {
+    font-size: 1.125rem;
+    letter-spacing: 0.06em;
+    margin-top: 40px;
+    margin-bottom: 12px;
+    opacity: 0.9;
+
+    @include sp {
+      font-size: 1rem;
+      margin-top: 32px;
+    }
+  }
+
+  :global(p) {
+    font-size: 0.875rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    opacity: 0.8;
+  }
+
+  :global(ul) {
+    padding-left: 1.2em;
+  }
+
+  :global(li) {
+    list-style: disc;
+    font-size: 0.875rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    opacity: 0.8;
+  }
+
+  :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+//──────────────────  Project detail links  ──────────────────//
+.project-detail-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+//──────────────────  Project detail link  ──────────────────//
+.project-detail-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 24px;
+  border: 0.5px solid $c-text;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: $c-text;
+    color: $c-bg;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+</style>

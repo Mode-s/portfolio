@@ -1,10 +1,207 @@
 ---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+// プロジェクトデータを取得（order の昇順で並び替え）
+const projects = (await getCollection('projects'))
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+
+// 種別ラベルの表示用マップ
+const typeLabels = {
+  client: 'Client Work',
+  self: 'Self Project',
+};
+
+// 日付フォーマット変換: "2024-09" → "2024.09"
+const formatDate = (date: string) => date.replace('-', '.');
 ---
 <section class="section projects" id="projects">
+  <div class="projects-inner">
+    <div class="projects-content">
+      <p class="projects-label" data-js="projects-label">projects</p>
+      <h2 class="projects-title">projects</h2>
+    </div>
 
+    <ul class="projects-list">
+      {projects.map((project) => (
+        <li class="projects-item">
+          <a class="projects-card" href={`/projects/${project.id}`}>
+            <figure class="projects-card-thumb">
+              <Image src={project.data.thumbnail} alt={project.data.title} />
+            </figure>
+            <div class="projects-card-body">
+              <div class="projects-card-meta">
+                <time class="projects-card-date" datetime={project.data.date}>
+                  {formatDate(project.data.date)}
+                </time>
+                <span class="projects-card-type" data-type={project.data.type}>
+                  {typeLabels[project.data.type]}
+                </span>
+              </div>
+              <h3 class="projects-card-title">{project.data.title}</h3>
+              <ul class="projects-card-tags">
+                {project.data.tech.map((tech) => (
+                  <li class="projects-card-tag">{tech}</li>
+                ))}
+              </ul>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </section>
 
 <style lang="scss">
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
+
+  //──────────────────  Projects  ──────────────────//
+  .projects {
+    padding: 40px;
+  }
+  //──────────────────  Projects inner  ──────────────────//
+  .projects-inner {
+    position: relative;
+    margin: 0 auto;
+  }
+  //──────────────────  Projects content  ──────────────────//
+  .projects-content {
+    display: flex;
+    flex-direction: column;
+  }
+  //──────────────────  Projects label  ──────────────────//
+  .projects-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+  //──────────────────  Projects title  ──────────────────//
+  .projects-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+
+    @include sp {
+      font-size: 2.5rem;
+    }
+  }
+  //──────────────────  Projects list  ──────────────────//
+  .projects-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
+    margin-top: 60px;
+
+    @include tablet {
+      gap: 24px;
+    }
+
+    @include sp {
+      grid-template-columns: 1fr;
+    }
+  }
+  //──────────────────  Projects card  ──────────────────//
+  .projects-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 0.5px solid rgba(204, 200, 190, 0.15);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    
+    &:hover {
+      transform: translateY(-4px);
+      opacity: 0.85;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+  //──────────────────  Projects card thumb  ──────────────────//
+  .projects-card-thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 0.5px solid rgba(204, 200, 190, 0.2);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  //──────────────────  Projects card body  ──────────────────//
+  .projects-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 12px;
+    padding: 20px;
+  }
+  //──────────────────  Projects card meta  ──────────────────//
+  .projects-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  //──────────────────  Projects card date  ──────────────────//
+  .projects-card-date {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Projects card type  ──────────────────//
+  .projects-card-type {
+    padding: 2px 8px;
+    border: 0.5px solid rgba(204, 200, 190, 0.4);
+    border-radius: 10px;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+  }
+  //──────────────────  Projects card title  ──────────────────//
+  .projects-card-title {
+    font-size: 1.125rem;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  //──────────────────  Projects card tags  ──────────────────//
+  .projects-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  //──────────────────  Projects card tag  ──────────────────//
+  .projects-card-tag {
+    padding: 2px 8px;
+    border: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-radius: 3px;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
 </style>
+
+<script>
+  import { scramble } from '../utils/scramble';
+
+  const label = document.querySelector<HTMLElement>('[data-js="projects-label"]');
+
+  if (label) {
+    // セクションが見えたタイミングで scramble を発火（一度だけ）
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          scramble(label, 800, 0);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    observer.observe(label);
+  }
+</script>
