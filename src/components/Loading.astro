@@ -1,5 +1,12 @@
 ---
 ---
+<script is:inline>
+  // FOUC防止：訪問済みなら HTML 描画と同時にローディング要素を消す
+  if (sessionStorage.getItem('loaded') === 'true') {
+    document.documentElement.dataset.loaded = 'true';
+  }
+</script>
+
 <div class="loading" data-js="loading">
   <div class="loading-inner">
     <p class="loading-name">shota portfolio</p>
@@ -13,6 +20,10 @@
 <style lang="scss">
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
+
+  :global(html[data-loaded="true"]) .loading {
+    display: none;
+  }
 
   //──────────────────  Loading  ──────────────────//
   .loading {
@@ -79,7 +90,15 @@
   const bar = document.querySelector<HTMLElement>('[data-js="loading-bar"]');
   const percent = document.querySelector<HTMLElement>('[data-js="loading-percent"]');
 
-  if (loading && bar && percent) {
+  // すでにこのセッションで一度ローディング済みの場合
+  if (sessionStorage.getItem('loaded') === 'true') {
+    // Hero / Header の `loading:complete` リスナー登録が完了するのを待ってから発火
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('loading:complete'));
+    }, 0);
+  } else if (loading && bar && percent) {
+    sessionStorage.setItem('loaded', 'true');
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     document.body.style.overflow = 'hidden';
