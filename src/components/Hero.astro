@@ -98,15 +98,24 @@
 <script>
   import { scramble } from '../utils/scramble';
 
-  const label = document.querySelector<HTMLElement>('.hero-label');
-  const scroll = document.querySelector<HTMLElement>('.hero-scroll');
+  const initHero = () => {
+    const label = document.querySelector<HTMLElement>('.hero-label');
+    const scroll = document.querySelector<HTMLElement>('.hero-scroll');
 
+    if (!label && !scroll) return;
 
-  const init = () => {
-    if (label) scramble(label, 800, 0);
-    if (scroll) scramble(scroll, 1200, 200);
-  }
+    const fire = () => {
+      if (label) scramble(label, 800, 0);
+      if (scroll) scramble(scroll, 1200, 200);
+    };
 
-  // ローディング完了後に発火
-  window.addEventListener('loading:complete', init, { once: true });
+    // 初回はloading完了を待つ。訪問済みセッションでは即発火
+    if (sessionStorage.getItem('loaded') === 'true') {
+      fire();
+    } else {
+      window.addEventListener('loading:complete', fire, { once: true });
+    }
+  };
+
+  document.addEventListener('astro:page-load', initHero);
 </script>

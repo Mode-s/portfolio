@@ -1,7 +1,7 @@
 ---
 ---
 
-<header class="header" data-js="header">
+<header class="header" data-js="header" transition:persist>
   <nav class="header-nav">
     <ul class="header-nav-list" data-js="header-nav-list">
       <li><a href="/" class="header-nav-link">HOME</a></li>
@@ -322,107 +322,115 @@
 <script>
   import { scramble } from '../utils/scramble';
 
-const list = document.querySelector<HTMLElement>('[data-js="header-nav-list"]');
-const current = document.querySelector<HTMLElement>('[data-js="header-nav-current"]');
-const links = list?.querySelectorAll<HTMLAnchorElement>('.header-nav-link');
+  // ─────────────────────────────────────────
+  //  ナビ・インジケーター
+  // ─────────────────────────────────────────
+  const initHeaderNav = () => {
+    const list = document.querySelector<HTMLElement>('[data-js="header-nav-list"]');
+    const current = document.querySelector<HTMLElement>('[data-js="header-nav-current"]');
+    const links = list?.querySelectorAll<HTMLAnchorElement>('.header-nav-link');
 
-if (list && current && links && links.length > 0) {
-  // インジケーターの位置・サイズと is-active を更新
-  const updateCurrent = (target: HTMLElement) => {
-    const targetRect = target.getBoundingClientRect();
-    const listRect = list.getBoundingClientRect();
-    const x = targetRect.left - listRect.left;
+    if (!list || !current || !links || links.length === 0) return;
 
-    current.style.setProperty('--current-x', `${x}px`);
-    current.style.setProperty('--current-w', `${targetRect.width}px`);
+    // インジケーターの位置・サイズと is-active を更新
+    const updateCurrent = (target: HTMLElement) => {
+      const targetRect = target.getBoundingClientRect();
+      const listRect = list.getBoundingClientRect();
+      const x = targetRect.left - listRect.left;
 
-    links.forEach((link) => link.classList.toggle('is-active', link === target));
-  };
+      current.style.setProperty('--current-x', `${x}px`);
+      current.style.setProperty('--current-w', `${targetRect.width}px`);
 
-  // 現在のURLからアクティブにすべきリンクを判定
-  const resolveActiveLink = (): HTMLAnchorElement => {
-    const path = window.location.pathname;
+      links.forEach((link) => link.classList.toggle('is-active', link === target));
+    };
 
-    // パス完全一致（/ , /projects , /contact など）
-    const exact = Array.from(links).find((link) => {
-      const href = link.getAttribute('href') ?? '';
-      const linkPath = href.split('#')[0] || '/';
-      return linkPath === path;
-    });
-    if (exact) return exact;
+    // 現在のURLからアクティブにすべきリンクを判定
+    const resolveActiveLink = (): HTMLAnchorElement => {
+      const path = window.location.pathname;
 
-    // /projects/[slug] のような詳細ページは親パスを起点にアクティブ判定
-    const prefix = Array.from(links).find((link) => {
-      const href = link.getAttribute('href') ?? '';
-      const linkPath = href.split('#')[0];
-      return linkPath && linkPath !== '/' && path.startsWith(`${linkPath}/`);
-    });
-    if (prefix) return prefix;
-
-    // どれにも該当しなければ HOME を初期値に
-    return links[0];
-  };
-
-  // 初期配置はトランジションを一時的に無効化して「瞬間移動」させる
-  const initCurrent = () => {
-    const active = resolveActiveLink();
-    const prev = current.style.transition;
-    current.style.transition = 'none';
-    updateCurrent(active);
-    // 2フレーム待ってからトランジションを戻す(以後はホバーや再計算で滑らかに動く)
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        current.style.transition = prev;
+      const exact = Array.from(links).find((link) => {
+        const href = link.getAttribute('href') ?? '';
+        const linkPath = href.split('#')[0] || '/';
+        return linkPath === path;
       });
+      if (exact) return exact;
+
+      const prefix = Array.from(links).find((link) => {
+        const href = link.getAttribute('href') ?? '';
+        const linkPath = href.split('#')[0];
+        return linkPath && linkPath !== '/' && path.startsWith(`${linkPath}/`);
+      });
+      if (prefix) return prefix;
+
+      return links[0];
+    };
+
+    // 初期配置のみ transition を切って「瞬間移動」させる
+    // (以降はCSSのtransitionが効くので、ページ遷移時もスライドする)
+    const initCurrent = () => {
+      const active = resolveActiveLink();
+      const prev = current.style.transition;
+      current.style.transition = 'none';
+      updateCurrent(active);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          current.style.transition = prev;
+        });
+      });
+    };
+
+    requestAnimationFrame(initCurrent);
+
+    // ★ ページ遷移後にアクティブを更新 → CSS transition でスライドする
+    document.addEventListener('astro:after-swap', () => {
+      updateCurrent(resolveActiveLink());
     });
+
+    // 同ページ内 #anchor リンク用の即時反映
+    links.forEach((link) => {
+      link.addEventListener('click', () => updateCurrent(link));
+    });
+
+    window.addEventListener('resize', () => {
+      const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
+      if (active) updateCurrent(active);
+    });
+
+    // ナビゲーションのスクランブル(初回のみ)
+    const fireNavScramble = () => {
+      links.forEach((link, i) => {
+        scramble(link, 500, i * 100);
+      });
+    };
+
+    const hasLoading = document.querySelector('[data-js="loading"]');
+    const isFirstVisit = sessionStorage.getItem('loaded') !== 'true';
+
+    if (hasLoading && isFirstVisit) {
+      window.addEventListener('loading:complete', fireNavScramble, { once: true });
+    } else {
+      fireNavScramble();
+    }
   };
 
-  requestAnimationFrame(initCurrent);
+  // ─────────────────────────────────────────
+  //  ハンバーガー / オーバーレイ
+  // ─────────────────────────────────────────
+  const initHamburger = () => {
+    const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');
+    const overlay = document.querySelector<HTMLElement>('[data-js="header-overlay"]');
+    const overlayLinks = overlay?.querySelectorAll<HTMLAnchorElement>('.header-overlay-link');
 
-  // クリック時は同ページ内アンカー(#about など)用の即時反映だけ意味を持つ
-  // 別ページへの遷移時はDOM自体が再構築されるので initCurrent が呼ばれ直す
-  links.forEach((link) => {
-    link.addEventListener('click', () => updateCurrent(link));
-  });
+    if (!hamburger || !overlay) return;
 
-  window.addEventListener('resize', () => {
-    const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
-    if (active) updateCurrent(active);
-  });
-
-  // ── ナビゲーションのスクランブル発火 ──
-  const fireNavScramble = () => {
-    links.forEach((link, i) => {
-      scramble(link, 500, i * 100);
-    });
-  };
-
-  const hasLoading = document.querySelector('[data-js="loading"]');
-  const isFirstVisit = sessionStorage.getItem('loaded') !== 'true';
-
-  if (hasLoading && isFirstVisit) {
-    window.addEventListener('loading:complete', fireNavScramble, { once: true });
-  } else {
-    fireNavScramble();
-  }
-}
-
-  const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');
-  const overlay = document.querySelector<HTMLElement>('[data-js="header-overlay"]');
-  const overlayLinks = overlay?.querySelectorAll<HTMLAnchorElement>('.header-overlay-link');
-
-  if (hamburger && overlay) {
-
-  // ── 開閉の核となる処理 ──────────────────────────────────
     const open = () => {
       hamburger.classList.add('is-open');
       overlay.classList.add('is-open');
       hamburger.setAttribute('aria-expanded', 'true');
       hamburger.setAttribute('aria-label', 'メニューを閉じる');
       overlay.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden'; // スクロールロック
+      document.body.style.overflow = 'hidden';
 
-      // ── オーバーレイリンクにスクランブル ──
       overlayLinks?.forEach((link, i) => {
         scramble(link, 600, i * 80);
       });
@@ -434,27 +442,33 @@ if (list && current && links && links.length > 0) {
       hamburger.setAttribute('aria-expanded', 'false');
       hamburger.setAttribute('aria-label', 'メニューを開く');
       overlay.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = ''; // スクロールロック解除
+      document.body.style.overflow = '';
     };
 
     const toggle = () => {
       hamburger.classList.contains('is-open') ? close() : open();
     };
 
-    // ── イベント登録 ─────────────────────────────────────────
     hamburger.addEventListener('click', toggle);
 
-    // オーバーレイリンクをクリックしたら閉じる
     overlayLinks?.forEach((link) => {
       link.addEventListener('click', close);
     });
 
-    // ESCキーで閉じる
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && hamburger.classList.contains('is-open')) {
         close();
-        hamburger.focus(); // フォーカスをボタンに戻す
+        hamburger.focus();
       }
     });
-  }
+
+    // ページ遷移時にオーバーレイが開いていれば閉じる
+    document.addEventListener('astro:after-swap', () => {
+      if (hamburger.classList.contains('is-open')) close();
+    });
+  };
+
+  // ヘッダーは transition:persist で保持されるため、初期化は1回のみで良い
+  initHeaderNav();
+  initHamburger();
 </script>

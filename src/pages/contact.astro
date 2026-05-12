@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { scramble } from '../utils/scramble';
 ---
 
 <BaseLayout title="Contact | Umemoto Shota">
@@ -280,14 +279,16 @@ import { scramble } from '../utils/scramble';
 <script>
   import { scramble } from '../utils/scramble';
 
-  const label = document.querySelector<HTMLElement>('[data-js="contact-page-label"]');
+  const initContactPage = () => {
+    const label = document.querySelector<HTMLElement>('[data-js="contact-page-label"]');
+    if (!label) return;
 
-  if (label) {
-    // 訪問済みセッションでも即時発火、初回は loading:complete 待ち
     if (sessionStorage.getItem('loaded') === 'true') {
       scramble(label, 800, 0);
     } else {
       window.addEventListener('loading:complete', () => scramble(label, 800, 0), { once: true });
     }
-  }
+  };
+
+  document.addEventListener('astro:page-load', initContactPage);
 </script>

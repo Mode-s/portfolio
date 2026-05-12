@@ -128,10 +128,10 @@
 <script>
   import { scramble } from '../utils/scramble';
 
-  const label = document.querySelector<HTMLElement>('[data-js="contact-label"]');
+  const initContact = () => {
+    const label = document.querySelector<HTMLElement>('[data-js="contact-label"]');
+    if (!label) return;
 
-  if (label) {
-    // セクションが見えたタイミングで scramble を発火（一度だけ）
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -139,8 +139,10 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.3 }); // ラベルが30%見えたら発火
+    }, { threshold: 0.3 });
 
     observer.observe(label);
-  }
+  };
+
+  document.addEventListener('astro:page-load', initContact);
 </script>

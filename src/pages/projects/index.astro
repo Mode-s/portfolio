@@ -351,32 +351,29 @@ const formatDate = (date: string) => date.replace('-', '.');
 <script>
   import { scramble } from '../../utils/scramble';
 
-  // ── 要素取得 ───────────────────────────────────────────
-  const label = document.querySelector<HTMLElement>('[data-js="projects-index-label"]');
-  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-js="projects-index-filter"]');
-  const items = document.querySelectorAll<HTMLElement>('[data-js="projects-index-item"]');
-  const empty = document.querySelector<HTMLElement>('[data-js="projects-index-empty"]');
+  const initProjectsIndex = () => {
+    const label = document.querySelector<HTMLElement>('[data-js="projects-index-label"]');
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-js="projects-index-filter"]');
+    const items = document.querySelectorAll<HTMLElement>('[data-js="projects-index-item"]');
+    const empty = document.querySelector<HTMLElement>('[data-js="projects-index-empty"]');
 
-  // ── ラベルのスクランブル（ローディング完了後に1回だけ） ────────────
-  if (label) {
-    const fire = () => scramble(label, 800, 0);
-
-    // セッション初回 → loading:complete を待つ
-    // 訪問済み → イベントが既に終了している可能性があるので即時発火
-    if (sessionStorage.getItem('loaded') === 'true') {
-      fire();
-    } else {
-      window.addEventListener('loading:complete', fire, { once: true });
+    // ── ラベルのスクランブル ──
+    if (label) {
+      const fire = () => scramble(label, 800, 0);
+      if (sessionStorage.getItem('loaded') === 'true') {
+        fire();
+      } else {
+        window.addEventListener('loading:complete', fire, { once: true });
+      }
     }
-  }
 
-  // ── フィルター機能 ─────────────────────────────────────
-  if (buttons.length > 0 && items.length > 0) {
+    // ── フィルター機能 ──
+    if (buttons.length === 0 || items.length === 0) return;
+
     const selected = new Set<string>(['all']);
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const FADE_DURATION = 300; // .projects-index-item の transition と合わせる
+    const FADE_DURATION = 300;
 
-    // ── ボタンの見た目を現在の状態に同期 ──────────────────────
     const syncButtons = () => {
       buttons.forEach((button) => {
         const category = button.dataset.category ?? '';
@@ -386,19 +383,23 @@ const formatDate = (date: string) => date.replace('-', '.');
       });
     };
 
-    // ── 表示すべきか判定 ────────────────────────────────
     const shouldShow = (item: HTMLElement): boolean => {
       if (selected.has('all')) return true;
       const categories = (item.dataset.categories ?? '').split(',').filter(Boolean);
       return categories.some((category) => selected.has(category));
     };
 
-    // ── アイテムの表示/非表示を切り替え（フェード付き） ─────────────
+    const updateEmptyState = () => {
+      if (!empty) return;
+      const visibleCount = Array.from(items).filter(
+        (item) => !item.classList.contains('is-hidden')
+      ).length;
+      empty.hidden = visibleCount > 0;
+    };
+
     const syncItems = () => {
-      // フェード開始：消えるものに is-fading を付ける
       items.forEach((item) => {
         const visible = shouldShow(item);
-
         if (!visible && !item.classList.contains('is-hidden')) {
           item.classList.add('is-fading');
         } else if (visible) {
@@ -407,7 +408,6 @@ const formatDate = (date: string) => date.replace('-', '.');
         }
       });
 
-      // フェード完了後に DOM から消す
       const finalize = () => {
         items.forEach((item) => {
           if (item.classList.contains('is-fading')) {
@@ -415,6 +415,7 @@ const formatDate = (date: string) => date.replace('-', '.');
             item.classList.remove('is-fading');
           }
         });
+
         updateEmptyState();
       };
 
@@ -425,22 +426,11 @@ const formatDate = (date: string) => date.replace('-', '.');
       }
     };
 
-    // ── 該当0件メッセージの表示制御 ──────────────────────────
-    const updateEmptyState = () => {
-      if (!empty) return;
-      const visibleCount = Array.from(items).filter(
-        (item) => !item.classList.contains('is-hidden')
-      ).length;
-      empty.hidden = visibleCount > 0;
-    };
-
-    // ── 状態更新と見た目の同期 ─────────────────────────────
     const update = () => {
       syncButtons();
       syncItems();
     };
 
-    // ── クリックイベント ──────────────────────────────────
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         const category = button.dataset.category ?? '';
@@ -450,13 +440,11 @@ const formatDate = (date: string) => date.replace('-', '.');
           selected.add('all');
         } else {
           selected.delete('all');
-
           if (selected.has(category)) {
             selected.delete(category);
           } else {
             selected.add(category);
           }
-
           if (selected.size === 0) {
             selected.add('all');
           }
@@ -465,5 +453,7 @@ const formatDate = (date: string) => date.replace('-', '.');
         update();
       });
     });
-  }
+  };
+
+  document.addEventListener('astro:page-load', initProjectsIndex);
 </script>

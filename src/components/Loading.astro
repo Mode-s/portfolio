@@ -82,22 +82,32 @@
 </style>
 
 <script>
-  const loading = document.querySelector<HTMLElement>('[data-js="loading"]');
-  const bar = document.querySelector<HTMLElement>('[data-js="loading-bar"]');
-  const percent = document.querySelector<HTMLElement>('[data-js="loading-percent"]');
+  const initLoading = () => {
+    const loading = document.querySelector<HTMLElement>('[data-js="loading"]');
 
-  // すでにこのセッションで一度ローディング済みの場合
-  if (sessionStorage.getItem('loaded') === 'true') {
-    loading?.remove();
-    // Hero / Header の `loading:complete` リスナー登録が完了するのを待ってから発火
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('loading:complete'));
-    }, 0);
-  } else if (loading && bar && percent) {
+    // homeページ以外（Loading要素が存在しないページ）では何もしない
+    if (!loading) return;
+
+    // すでにこのセッションで一度ローディング済みの場合
+    if (sessionStorage.getItem('loaded') === 'true') {
+      // view transitions で<html>属性が残るので明示的に削除
+      document.documentElement.removeAttribute('data-firstvisit');
+      loading.remove();
+      // 同フレーム内のリスナー登録に間に合うように1フレーム遅延
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new CustomEvent('loading:complete'));
+      });
+
+      return;
+    }
+
+    const bar = document.querySelector<HTMLElement>('[data-js="loading-bar"]');
+    const percent = document.querySelector<HTMLElement>('[data-js="loading-percent"]');
+    if (!bar || !percent) return;
+
     sessionStorage.setItem('loaded', 'true');
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     document.body.style.overflow = 'hidden';
 
     const complete = () => {
@@ -111,26 +121,29 @@
 
     if (prefersReducedMotion) {
       complete();
-    } else {
-      const duration = 2500;
-      const startTime = performance.now();
-
-      const tick = (now: number) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        bar.style.transform = `scaleX(${progress})`;
-        percent.textContent = `${Math.floor(progress * 100)}%`;
-
-        if (progress < 1) {
-          requestAnimationFrame(tick);
-        } else {
-          percent.textContent = '100%';
-          complete();
-        }
-      };
-
-      requestAnimationFrame(tick);
+      return;
     }
-  }
+
+    const duration = 2500;
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      bar.style.transform = `scaleX(${progress})`;
+      percent.textContent = `${Math.floor(progress * 100)}%`;
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        percent.textContent = '100%';
+        complete();
+      }
+    };
+
+    requestAnimationFrame(tick);
+  };
+
+  document.addEventListener('astro:page-load', initLoading);
 </script>

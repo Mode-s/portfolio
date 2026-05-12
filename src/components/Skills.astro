@@ -175,10 +175,10 @@ import { Icon } from 'astro-icon/components';
 <script>
   import { scramble } from '../utils/scramble';
 
-  const label = document.querySelector<HTMLElement>('[data-js="skills-label"]');
+  const initSkills = () => {
+    const label = document.querySelector<HTMLElement>('[data-js="skills-label"]');
+    if (!label) return;
 
-  if (label) {
-    // セクションが見えたタイミングで scramble を発火（一度だけ）
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -189,5 +189,7 @@ import { Icon } from 'astro-icon/components';
     }, { threshold: 0.3 });
 
     observer.observe(label);
-  }
+  };
+
+  document.addEventListener('astro:page-load', initSkills);
 </script>

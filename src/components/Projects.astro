@@ -189,10 +189,10 @@ const formatDate = (date: string) => date.replace('-', '.');
 <script>
   import { scramble } from '../utils/scramble';
 
-  const label = document.querySelector<HTMLElement>('[data-js="projects-label"]');
+  const initProjects = () => {
+    const label = document.querySelector<HTMLElement>('[data-js="projects-label"]');
+    if (!label) return;
 
-  if (label) {
-    // セクションが見えたタイミングで scramble を発火（一度だけ）
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -203,5 +203,7 @@ const formatDate = (date: string) => date.replace('-', '.');
     }, { threshold: 0.3 });
 
     observer.observe(label);
-  }
+  };
+
+  document.addEventListener('astro:page-load', initProjects);
 </script>
