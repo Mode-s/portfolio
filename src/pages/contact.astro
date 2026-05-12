@@ -12,7 +12,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="contact-page-body">
         <div class="contact-page-info">
           <p class="contact-page-text">
-            お仕事のご依頼・ご相談は、<br />メールまたは SNS の DM までお気軽にどうぞ。
+            お仕事のご依頼・ご相談は、メールまたは SNS の DM までお気軽にどうぞ。
           </p>
         </div>
         <ul class="contact-page-links">
@@ -116,8 +116,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   //──────────────────  Contact page body  ──────────────────//
   .contact-page-body {
-    display: grid;
-    grid-template-columns: 1fr 1.6fr;
+    display: flex;
+    flex-direction: column;
     gap: 60px;
     margin-top: 80px;
   }
@@ -181,6 +181,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .contact-page-link-value {
     font-size: 0.8125rem;
     letter-spacing: 0.06em;
+  }
+
+  //──────────────────  Contact page form wrap  ──────────────────//
+  .contact-page-form-wrap {
+    margin-top: 60px;
   }
 
   //──────────────────  Contact page form  ──────────────────//
