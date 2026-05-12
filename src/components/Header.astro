@@ -338,6 +338,7 @@
     let currentAnimation: Animation | null = null;
 
     const updateCurrent = (target: HTMLElement) => {
+      
       const targetRect = target.getBoundingClientRect();
       const listRect = list.getBoundingClientRect();
       const nextX = targetRect.left - listRect.left;
@@ -432,7 +433,16 @@
 
     // 同ページ内 #anchor リンク用の即時反映
     links.forEach((link) => {
-      link.addEventListener('click', () => updateCurrent(link));
+      link.addEventListener('click', () => {
+        const href = link.getAttribute('href') ?? '';
+        const linkPath = href.split('#')[0] || '/';
+        const currentPath = window.location.pathname;
+
+        // 同じパスへの遷移（= ハッシュリンクなど）のときだけ即時更新
+        if (linkPath === currentPath) {
+          updateCurrent(link);
+        }
+      });
     });
 
     window.addEventListener('resize', () => {
