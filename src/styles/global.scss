@@ -10,8 +10,3 @@ body {
   font-size: $f-base;
   line-height: 1.8;
 }
-
-// 訪問済みセッションではローディングを完全に非表示
-html[data-loaded="true"] .loading {
-  display: none !important;
-}

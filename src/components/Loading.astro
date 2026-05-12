@@ -18,6 +18,7 @@
 
   //──────────────────  Loading  ──────────────────//
   .loading {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -33,6 +34,11 @@
     @include reduced-motion {
       transition: none;
     }
+  }
+
+  // 初回訪問時のみ表示
+  :global(html[data-firstvisit="true"]) .loading {
+    display: flex;
   }
 
   //──────────────────  Loading inner  ──────────────────//
@@ -83,6 +89,7 @@
 
   // すでにこのセッションで一度ローディング済みの場合
   if (sessionStorage.getItem('loaded') === 'true') {
+    loading?.remove();
     // Hero / Header の `loading:complete` リスナー登録が完了するのを待ってから発火
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('loading:complete'));
