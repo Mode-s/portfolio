@@ -1,11 +1,5 @@
 ---
 ---
-<script is:inline>
-  // FOUC防止：訪問済みなら HTML 描画と同時にローディング要素を消す
-  if (sessionStorage.getItem('loaded') === 'true') {
-    document.documentElement.dataset.loaded = 'true';
-  }
-</script>
 
 <div class="loading" data-js="loading">
   <div class="loading-inner">
@@ -21,9 +15,6 @@
   @use '../styles/variables' as *;
   @use '../styles/mixins' as *;
 
-  :global(html[data-loaded="true"]) .loading {
-    display: none;
-  }
 
   //──────────────────  Loading  ──────────────────//
   .loading {

@@ -352,12 +352,23 @@
       if (active) updateCurrent(active);
     });
 
-    // ── ローディング完了後にスクランブル発火 ──
-    window.addEventListener('loading:complete', () => {
-      links.forEach((link, i) => {
-        scramble(link, 500, i * 100);
-      });
-    }, { once: true });
+    // ── ナビゲーションのスクランブル発火 ──
+    // トップページではローディング完了後、それ以外のページでは即時実行
+    const fireNavScramble = () => {
+    links.forEach((link, i) => {
+      scramble(link, 500, i * 100);
+    });
+  };
+
+  // Loading 要素がページに存在し、かつ初回訪問のときだけイベントを待つ
+  const hasLoading = document.querySelector('[data-js="loading"]');
+  const isFirstVisit = sessionStorage.getItem('loaded') !== 'true';
+
+  if (hasLoading && isFirstVisit) {
+    window.addEventListener('loading:complete', fireNavScramble, { once: true });
+  } else {
+      fireNavScramble();
+    }
   }
 
   const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');
