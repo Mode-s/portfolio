@@ -322,55 +322,90 @@
 <script>
   import { scramble } from '../utils/scramble';
 
-  const list = document.querySelector<HTMLElement>('[data-js="header-nav-list"]');
-  const current = document.querySelector<HTMLElement>('[data-js="header-nav-current"]');
-  const links = list?.querySelectorAll<HTMLAnchorElement>('.header-nav-link');
+const list = document.querySelector<HTMLElement>('[data-js="header-nav-list"]');
+const current = document.querySelector<HTMLElement>('[data-js="header-nav-current"]');
+const links = list?.querySelectorAll<HTMLAnchorElement>('.header-nav-link');
 
-  if (list && current && links && links.length > 0) {
-    const updateCurrent = (target: HTMLElement) => {
-      const targetRect = target.getBoundingClientRect();
-      const listRect = list.getBoundingClientRect();
-      const x = targetRect.left - listRect.left;
+if (list && current && links && links.length > 0) {
+  // インジケーターの位置・サイズと is-active を更新
+  const updateCurrent = (target: HTMLElement) => {
+    const targetRect = target.getBoundingClientRect();
+    const listRect = list.getBoundingClientRect();
+    const x = targetRect.left - listRect.left;
 
-      current.style.setProperty('--current-x', `${x}px`);
-      current.style.setProperty('--current-w', `${targetRect.width}px`);
+    current.style.setProperty('--current-x', `${x}px`);
+    current.style.setProperty('--current-w', `${targetRect.width}px`);
 
-      links.forEach((link) => link.classList.toggle('is-active', link === target));
+    links.forEach((link) => link.classList.toggle('is-active', link === target));
+  };
 
+  // 現在のURLからアクティブにすべきリンクを判定
+  const resolveActiveLink = (): HTMLAnchorElement => {
+    const path = window.location.pathname;
 
-    };
-
-    requestAnimationFrame(() => updateCurrent(links[0]));
-
-
-    links.forEach((link) => {
-      link.addEventListener('click', () => updateCurrent(link));
+    // パス完全一致（/ , /projects , /contact など）
+    const exact = Array.from(links).find((link) => {
+      const href = link.getAttribute('href') ?? '';
+      const linkPath = href.split('#')[0] || '/';
+      return linkPath === path;
     });
+    if (exact) return exact;
 
-
-    window.addEventListener('resize', () => {
-      const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
-      if (active) updateCurrent(active);
+    // /projects/[slug] のような詳細ページは親パスを起点にアクティブ判定
+    const prefix = Array.from(links).find((link) => {
+      const href = link.getAttribute('href') ?? '';
+      const linkPath = href.split('#')[0];
+      return linkPath && linkPath !== '/' && path.startsWith(`${linkPath}/`);
     });
+    if (prefix) return prefix;
 
-    // ── ナビゲーションのスクランブル発火 ──
-    // トップページではローディング完了後、それ以外のページでは即時実行
-    const fireNavScramble = () => {
+    // どれにも該当しなければ HOME を初期値に
+    return links[0];
+  };
+
+  // 初期配置はトランジションを一時的に無効化して「瞬間移動」させる
+  const initCurrent = () => {
+    const active = resolveActiveLink();
+    const prev = current.style.transition;
+    current.style.transition = 'none';
+    updateCurrent(active);
+    // 2フレーム待ってからトランジションを戻す(以後はホバーや再計算で滑らかに動く)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        current.style.transition = prev;
+      });
+    });
+  };
+
+  requestAnimationFrame(initCurrent);
+
+  // クリック時は同ページ内アンカー(#about など)用の即時反映だけ意味を持つ
+  // 別ページへの遷移時はDOM自体が再構築されるので initCurrent が呼ばれ直す
+  links.forEach((link) => {
+    link.addEventListener('click', () => updateCurrent(link));
+  });
+
+  window.addEventListener('resize', () => {
+    const active = list.querySelector<HTMLAnchorElement>('.header-nav-link.is-active');
+    if (active) updateCurrent(active);
+  });
+
+  // ── ナビゲーションのスクランブル発火 ──
+  const fireNavScramble = () => {
     links.forEach((link, i) => {
       scramble(link, 500, i * 100);
     });
   };
 
-  // Loading 要素がページに存在し、かつ初回訪問のときだけイベントを待つ
   const hasLoading = document.querySelector('[data-js="loading"]');
   const isFirstVisit = sessionStorage.getItem('loaded') !== 'true';
 
   if (hasLoading && isFirstVisit) {
     window.addEventListener('loading:complete', fireNavScramble, { once: true });
   } else {
-      fireNavScramble();
-    }
+    fireNavScramble();
   }
+}
 
   const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');
   const overlay = document.querySelector<HTMLElement>('[data-js="header-overlay"]');
