@@ -2,6 +2,18 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+// カテゴリ候補（フィルターUIから参照するため export）
+export const CATEGORIES = [
+  'web site',
+  'illust',
+  'logo',
+  'ui design',
+  'animation',
+  'graphic',
+] as const;
+
+export type Category = (typeof CATEGORIES)[number];
+
 const projects = defineCollection({
   // src/content/projects/ 配下の .md ファイルを全て読み込む
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
@@ -18,6 +30,9 @@ const projects = defineCollection({
 
     // 使用技術（配列）
     tech: z.array(z.string()),
+
+    // カテゴリ
+    categories: z.array(z.enum(CATEGORIES)).min(1),
 
     // サムネイル画像（src/assets/ 配下を想定）
     thumbnail: image(),

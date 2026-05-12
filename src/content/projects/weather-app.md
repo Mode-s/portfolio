@@ -3,6 +3,7 @@ title: "Weather App"
 date: "2024-08"
 type: "self"
 tech: ["HTML", "CSS", "JavaScript"]
+categories: ["web site"]
 thumbnail: "../../assets/images/profile.jpg"
 order: 3
 ---

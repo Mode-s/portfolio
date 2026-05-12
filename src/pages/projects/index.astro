@@ -1,0 +1,469 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../content.config';
+
+// プロジェクトデータ取得（order 昇順）
+const projects = (await getCollection('projects'))
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+
+// 種別ラベル（Projects.astro と同じマップ）
+const typeLabels = {
+  client: 'Client Work',
+  self: 'Self Project',
+};
+
+// 日付フォーマット "2024-09" → "2024.09"
+const formatDate = (date: string) => date.replace('-', '.');
+---
+
+<BaseLayout title="Projects | Umemoto Shota">
+  <section class="projects-index">
+    <div class="projects-index-inner">
+      <div class="projects-index-content">
+        <p class="projects-index-label" data-js="projects-index-label">projects</p>
+        <h1 class="projects-index-title">projects</h1>
+      </div>
+      <div class="projects-index-filter" role="group" aria-label="カテゴリで絞り込み">
+        <button
+          type="button"
+          class="projects-index-filter-button is-active"
+          data-js="projects-index-filter"
+          data-category="all"
+          aria-pressed="true"
+        >
+          All
+        </button>
+        {CATEGORIES.map((category) => (
+          <button
+            type="button"
+            class="projects-index-filter-button"
+            data-js="projects-index-filter"
+            data-category={category}
+            aria-pressed="false"
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+      <ul class="projects-index-list">
+        {projects.map((project) => (
+          <li class="projects-index-item" data-js="projects-index-item" data-categories={project.data.categories.join(',')}>
+            <a class="projects-index-link" href={`/projects/${project.id}`}>
+              <figure class="projects-index-thumb">
+                <Image src={project.data.thumbnail} alt={project.data.title} />
+              </figure>
+              <div class="projects-index-body">
+                <div class="projects-index-meta">
+                  <time class="projects-index-date" datetime={project.data.date}>
+                    {formatDate(project.data.date)}
+                  </time>
+                  <span class="projects-index-type" data-type={project.data.type}>
+                    {typeLabels[project.data.type]}
+                  </span>
+                </div>
+                <h2 class="projects-index-name">{project.data.title}</h2>
+                <ul class="projects-index-categories">
+                  {project.data.categories.map((category) => (
+                    <li class="projects-index-category">{category}</li>
+                  ))}
+                </ul>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="projects-index-empty" data-js="projects-index-empty" hidden>
+        No projects found.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  @use '../../styles/variables' as *;
+  @use '../../styles/mixins' as *;
+
+  //──────────────────  Projects index  ──────────────────//
+  .projects-index {
+    padding: 120px 40px 80px; // 上はヘッダー分を確保
+
+    @include tablet {
+      padding: 100px 32px 60px;
+    }
+
+    @include sp {
+      padding: 80px 20px 40px;
+    }
+  }
+
+  //──────────────────  Projects index inner  ──────────────────//
+  .projects-index-inner {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  //──────────────────  Projects index content  ──────────────────//
+  .projects-index-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  Projects index label  ──────────────────//
+  .projects-index-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Projects index title  ──────────────────//
+  .projects-index-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+
+    @include sp {
+      font-size: 2.5rem;
+    }
+  }
+
+  //──────────────────  Projects index filter  ──────────────────//
+  .projects-index-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 40px;
+
+    @include sp {
+      margin-top: 32px;
+    }
+  }
+
+  //──────────────────  Projects index filter button  ──────────────────//
+  .projects-index-filter-button {
+    padding: 6px 16px;
+    border: 0.5px solid $c-text;
+    border-radius: 20px;
+    color: $c-text;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &.is-active {
+      background-color: $c-text;
+      color: $c-bg;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Projects index list  ──────────────────//
+  .projects-index-list {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 60px;
+
+    @include tablet {
+      gap: 32px;
+    }
+  }
+
+  //──────────────────  Projects index item  ──────────────────//
+  .projects-index-item {
+    border-top: 0.5px solid rgba(204, 200, 190, 0.15);
+    padding-top: 40px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+
+    @include tablet {
+      padding-top: 32px;
+    }
+
+    &:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    &.is-hidden {
+      display: none;
+    }
+
+    &.is-fading {
+      opacity: 0;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Projects index item :hidden  ──────────────────//
+  .projects-index-item.is-hidden {
+    display: none;
+  }
+
+  //──────────────────  Projects index link  ──────────────────//
+  .projects-index-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    @include tablet {
+      gap: 24px;
+    }
+
+    @include sp {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Projects index thumb  ──────────────────//
+  .projects-index-thumb {
+    flex-shrink: 0;
+    width: 320px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 0.5px solid rgba(204, 200, 190, 0.2);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    @include tablet {
+      width: 240px;
+    }
+
+    @include sp {
+      width: 100%;
+    }
+  }
+
+  //──────────────────  Projects index link :hover thumb image  ──────────────────//
+  .projects-index-link:hover .projects-index-thumb img {
+    transform: scale(1.04);
+
+    @include reduced-motion {
+      transform: none;
+    }
+  }
+
+  //──────────────────  Projects index body  ──────────────────//
+  .projects-index-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 12px;
+    padding-top: 4px; // 画像と上端を視覚的に揃える
+  }
+
+  //──────────────────  Projects index meta  ──────────────────//
+  .projects-index-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  //──────────────────  Projects index date  ──────────────────//
+  .projects-index-date {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Projects index type  ──────────────────//
+  .projects-index-type {
+    padding: 2px 8px;
+    border: 0.5px solid rgba(204, 200, 190, 0.4);
+    border-radius: 10px;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+  }
+
+  //──────────────────  Projects index name  ──────────────────//
+  .projects-index-name {
+    font-size: 1.25rem;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+
+    @include sp {
+      font-size: 1.125rem;
+    }
+  }
+
+  //──────────────────  Projects index categories  ──────────────────//
+  .projects-index-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  //──────────────────  Projects index category  ──────────────────//
+  .projects-index-category {
+    padding: 2px 8px;
+    border: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-radius: 3px;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Projects index empty  ──────────────────//
+  .projects-index-empty {
+    margin-top: 60px;
+    text-align: center;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+
+    @include tablet {
+      margin-top: 40px;
+    }
+  }
+</style>
+
+<script>
+  import { scramble } from '../../utils/scramble';
+
+  // ── 要素取得 ───────────────────────────────────────────
+  const label = document.querySelector<HTMLElement>('[data-js="projects-index-label"]');
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-js="projects-index-filter"]');
+  const items = document.querySelectorAll<HTMLElement>('[data-js="projects-index-item"]');
+  const empty = document.querySelector<HTMLElement>('[data-js="projects-index-empty"]');
+
+  // ── ラベルのスクランブル（ローディング完了後に1回だけ） ────────────
+  if (label) {
+    const fire = () => scramble(label, 800, 0);
+
+    // セッション初回 → loading:complete を待つ
+    // 訪問済み → イベントが既に終了している可能性があるので即時発火
+    if (sessionStorage.getItem('loaded') === 'true') {
+      fire();
+    } else {
+      window.addEventListener('loading:complete', fire, { once: true });
+    }
+  }
+
+  // ── フィルター機能 ─────────────────────────────────────
+  if (buttons.length > 0 && items.length > 0) {
+    const selected = new Set<string>(['all']);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FADE_DURATION = 300; // .projects-index-item の transition と合わせる
+
+    // ── ボタンの見た目を現在の状態に同期 ──────────────────────
+    const syncButtons = () => {
+      buttons.forEach((button) => {
+        const category = button.dataset.category ?? '';
+        const isActive = selected.has(category);
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+    };
+
+    // ── 表示すべきか判定 ────────────────────────────────
+    const shouldShow = (item: HTMLElement): boolean => {
+      if (selected.has('all')) return true;
+      const categories = (item.dataset.categories ?? '').split(',').filter(Boolean);
+      return categories.some((category) => selected.has(category));
+    };
+
+    // ── アイテムの表示/非表示を切り替え（フェード付き） ─────────────
+    const syncItems = () => {
+      // フェード開始：消えるものに is-fading を付ける
+      items.forEach((item) => {
+        const visible = shouldShow(item);
+
+        if (!visible && !item.classList.contains('is-hidden')) {
+          item.classList.add('is-fading');
+        } else if (visible) {
+          item.classList.remove('is-fading');
+          item.classList.remove('is-hidden');
+        }
+      });
+
+      // フェード完了後に DOM から消す
+      const finalize = () => {
+        items.forEach((item) => {
+          if (item.classList.contains('is-fading')) {
+            item.classList.add('is-hidden');
+            item.classList.remove('is-fading');
+          }
+        });
+        updateEmptyState();
+      };
+
+      if (prefersReducedMotion) {
+        finalize();
+      } else {
+        window.setTimeout(finalize, FADE_DURATION);
+      }
+    };
+
+    // ── 該当0件メッセージの表示制御 ──────────────────────────
+    const updateEmptyState = () => {
+      if (!empty) return;
+      const visibleCount = Array.from(items).filter(
+        (item) => !item.classList.contains('is-hidden')
+      ).length;
+      empty.hidden = visibleCount > 0;
+    };
+
+    // ── 状態更新と見た目の同期 ─────────────────────────────
+    const update = () => {
+      syncButtons();
+      syncItems();
+    };
+
+    // ── クリックイベント ──────────────────────────────────
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const category = button.dataset.category ?? '';
+
+        if (category === 'all') {
+          selected.clear();
+          selected.add('all');
+        } else {
+          selected.delete('all');
+
+          if (selected.has(category)) {
+            selected.delete(category);
+          } else {
+            selected.add(category);
+          }
+
+          if (selected.size === 0) {
+            selected.add('all');
+          }
+        }
+
+        update();
+      });
+    });
+  }
+</script>

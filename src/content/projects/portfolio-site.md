@@ -3,6 +3,7 @@ title: "Portfolio Site"
 date: "2024-11"
 type: "self"
 tech: ["Astro", "TypeScript", "SCSS"]
+categories: ["web site"]
 thumbnail: "../../assets/images/profile.jpg"
 liveUrl: "https://example.com"
 order: 2
