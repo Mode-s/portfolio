@@ -1,0 +1,293 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { scramble } from '../utils/scramble';
+---
+
+<BaseLayout title="Contact | Umemoto Shota">
+  <section class="contact-page">
+    <div class="contact-page-inner">
+      <div class="contact-page-content">
+        <p class="contact-page-label" data-js="contact-page-label">contact</p>
+        <h1 class="contact-page-title">contact</h1>
+      </div>
+      <div class="contact-page-body">
+        <div class="contact-page-info">
+          <p class="contact-page-text">
+            お仕事のご依頼・ご相談は、<br />メールまたは SNS の DM までお気軽にどうぞ。
+          </p>
+        </div>
+        <ul class="contact-page-links">
+          <li class="contact-page-link-item">
+            <a href="" class="contact-page-link">
+              <span class="contact-page-link-label">Email</span>
+              <span class="contact-page-link-value">mexxxha@gmail.com</span>
+            </a>
+          </li>
+          <li class="contact-page-link-item">
+            <a href="" class="contact-page-link" href="" target="_blank" rel="noopener noreferrer">
+              <span class="contact-page-link-label">X (Twitter)</span>
+              <span class="contact-page-link-value">@username</span>
+            </a>
+          </li>
+          <li class="contact-page-link-item">
+            <a href="" class="contact-page-link" href="" target="_blank" rel="noopener noreferrer">
+              <span class="contact-page-link-label">Instagram</span>
+              <span class="contact-page-link-value">mexxxha@gmail.com</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="contact-page-form-wrap">
+        <form action="#" method="POST" novalidate class="contact-page-form">
+          <div class="contact-page-field">
+            <label for="contact-name" class="contact-page-field-label">
+              Name <span class="contact-page-field-required" aria-label="必須">*</span>
+            </label>
+            <input type="text" id="contact-name" name="name" autocomplete="name" required class="contact-page-field-input">
+          </div>
+          <div class="contact-page-field">
+            <label class="contact-page-field-label" for="contact-email">
+              Email <span class="contact-page-field-required" aria-label="必須">*</span>
+            </label>
+            <input
+              class="contact-page-field-input"
+              type="email"
+              id="contact-email"
+              name="email"
+              autocomplete="email"
+              required
+            />
+          </div>
+          <div class="contact-page-field">
+            <label class="contact-page-field-label" for="contact-message">
+              Message <span class="contact-page-field-required" aria-label="必須">*</span>
+            </label>
+            <textarea
+              class="contact-page-field-textarea"
+              id="contact-message"
+              name="message"
+              rows="6"
+              required
+            ></textarea>
+          </div>
+          <button class="contact-page-submit" type="submit">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  //──────────────────  Contact page  ──────────────────//
+  .contact-page {
+    padding: 120px 40px 80px;
+  }
+
+  //──────────────────  Contact page inner  ──────────────────//
+  .contact-page-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  //──────────────────  Contact page content  ──────────────────//
+  .contact-page-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  Contact page label  ──────────────────//
+  .contact-page-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Contact page title  ──────────────────//
+  .contact-page-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  //──────────────────  Contact page body  ──────────────────//
+  .contact-page-body {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 60px;
+    margin-top: 80px;
+  }
+
+  //──────────────────  Contact page info  ──────────────────//
+  .contact-page-info {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  //──────────────────  Contact page text  ──────────────────//
+  .contact-page-text {
+    font-size: 0.875rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Contact page links  ──────────────────//
+  .contact-page-links {
+    display: flex;
+    flex-direction: column;
+    border-top: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-bottom: 0.5px solid rgba(204, 200, 190, 0.3);
+  }
+
+  //──────────────────  Contact page link item  ──────────────────//
+  .contact-page-link-item {
+    & + & {
+      border-top: 0.5px solid rgba(204, 200, 190, 0.15);
+    }
+  }
+
+  //──────────────────  Contact page link  ──────────────────//
+  .contact-page-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 0;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.6;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Contact page link label  ──────────────────//
+  .contact-page-link-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  //──────────────────  Contact page link value  ──────────────────//
+  .contact-page-link-value {
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+  }
+
+  //──────────────────  Contact page form  ──────────────────//
+  .contact-page-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  //──────────────────  Contact page field  ──────────────────//
+  .contact-page-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  //──────────────────  Contact page field label  ──────────────────//
+  .contact-page-field-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Contact page field required  ──────────────────//
+  .contact-page-field-required {
+    margin-left: 4px;
+    opacity: 0.5;
+  }
+
+  //──────────────────  Contact page field input  ──────────────────//
+  .contact-page-field-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 0.5px solid rgba(204, 200, 190, 0.3);
+    background-color: transparent;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $c-text;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Contact page field textarea  ──────────────────//
+  .contact-page-field-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-radius: 0;
+    background-color: transparent;
+    color: $c-text;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $c-text;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Contact page submit  ──────────────────//
+  .contact-page-submit {
+    align-self: flex-start;
+    padding: 12px 32px;
+    border: 0.5px solid $c-text;
+    color: $c-text;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      background-color: $c-text;
+      color: $c-bg;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { scramble } from '../utils/scramble';
+
+  const label = document.querySelector<HTMLElement>('[data-js="contact-page-label"]');
+
+  if (label) {
+    // 訪問済みセッションでも即時発火、初回は loading:complete 待ち
+    if (sessionStorage.getItem('loaded') === 'true') {
+      scramble(label, 800, 0);
+    } else {
+      window.addEventListener('loading:complete', () => scramble(label, 800, 0), { once: true });
+    }
+  }
+</script>

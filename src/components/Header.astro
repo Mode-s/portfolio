@@ -4,10 +4,10 @@
 <header class="header" data-js="header">
   <nav class="header-nav">
     <ul class="header-nav-list" data-js="header-nav-list">
-      <li><a href="/#hero" class="header-nav-link">HOME</a></li>
+      <li><a href="/" class="header-nav-link">HOME</a></li>
       <li><a href="/#about" class="header-nav-link">ABOUT</a></li>
-      <li><a href="/#projects" class="header-nav-link">PROJECTS</a></li>
-      <li><a href="/#contact" class="header-nav-link">CONTACT</a></li>
+      <li><a href="/projects" class="header-nav-link">PROJECTS</a></li>
+      <li><a href="/contact" class="header-nav-link">CONTACT</a></li>
     </ul>
     <div class="header-nav-current" data-js="header-nav-current" aria-hidden="true"></div>
   </nav>
@@ -163,6 +163,7 @@
   //──────────────────  Header hamburger open state  ──────────────────//
   .header-hamburger.is-open {
     z-index: $z-base + 4;
+
     .header-hamburger-line:nth-child(1) {
       transform: translateY(3.5px) rotate(10deg);
     }
