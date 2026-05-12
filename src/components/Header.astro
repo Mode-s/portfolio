@@ -394,6 +394,7 @@
         const linkPath = href.split('#')[0] || '/';
         return linkPath === path;
       });
+
       if (exact) return exact;
 
       const prefix = Array.from(links).find((link) => {
@@ -401,14 +402,13 @@
         const linkPath = href.split('#')[0];
         return linkPath && linkPath !== '/' && path.startsWith(`${linkPath}/`);
       });
+
       if (prefix) return prefix;
 
       return links[0];
     };
 
   
-
-
     // ★ ページ遷移後にアクティブを更新 → CSS transition でスライドする
     // ★ 遷移開始時にアクティブを更新 → CSS transition がクリック直後から走る
     document.addEventListener('astro:before-preparation', (event: any) => {
@@ -430,6 +430,10 @@
 
       if (target) updateCurrent(target);
     });
+
+    // 初期位置をセット（prevW === 0 なのでアニメなしで配置される）
+    const initialTarget = resolveActiveLink();
+    updateCurrent(initialTarget);
 
     // 同ページ内 #anchor リンク用の即時反映
     links.forEach((link) => {
