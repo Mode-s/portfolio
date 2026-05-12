@@ -102,9 +102,6 @@
     transform: translateX(var(--current-x, 3px));
     background-color: $c-text;
     border-radius: 5px;
-    transition:
-      transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
-      width 0.45s cubic-bezier(0.65, 0, 0.35, 1);
     pointer-events: none;
 
   }
@@ -335,15 +332,56 @@
     if (!list || !current || !links || links.length === 0) return;
 
     // インジケーターの位置・サイズと is-active を更新
+    // 直近の位置・サイズを保持（アニメーションの開始値に使う）
+    let prevX = 3;
+    let prevW = 0;
+    let currentAnimation: Animation | null = null;
+
     const updateCurrent = (target: HTMLElement) => {
       const targetRect = target.getBoundingClientRect();
       const listRect = list.getBoundingClientRect();
-      const x = targetRect.left - listRect.left;
-
-      current.style.setProperty('--current-x', `${x}px`);
-      current.style.setProperty('--current-w', `${targetRect.width}px`);
+      const nextX = targetRect.left - listRect.left;
+      const nextW = targetRect.width;
 
       links.forEach((link) => link.classList.toggle('is-active', link === target));
+
+      // CSS変数も同期させておく（リサイズ後やアニメ未対応環境用のフォールバック）
+      current.style.setProperty('--current-x', `${nextX}px`);
+      current.style.setProperty('--current-w', `${nextW}px`);
+
+      // 既存のアニメーションをキャンセル
+      if (currentAnimation) currentAnimation.cancel();
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        prevX = nextX;
+        prevW = nextW;
+        return;
+      }
+
+      // 初回（prevW が 0）はアニメなしで即配置
+      if (prevW === 0) {
+        prevX = nextX;
+        prevW = nextW;
+        return;
+      }
+
+      // Web Animations API でアニメーション
+      // DOM 再アタッチを越えて生き残るので transition:persist と相性が良い
+      currentAnimation = current.animate(
+        [
+          { transform: `translateX(${prevX}px)`, width: `${prevW}px` },
+          { transform: `translateX(${nextX}px)`, width: `${nextW}px` },
+        ],
+        {
+          duration: 450,
+          easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
+          fill: 'forwards',
+        }
+      );
+
+      prevX = nextX;
+      prevW = nextW;
     };
 
     // 現在のURLからアクティブにすべきリンクを判定
@@ -367,25 +405,29 @@
       return links[0];
     };
 
-    // 初期配置のみ transition を切って「瞬間移動」させる
-    // (以降はCSSのtransitionが効くので、ページ遷移時もスライドする)
-    const initCurrent = () => {
-      const active = resolveActiveLink();
-      const prev = current.style.transition;
-      current.style.transition = 'none';
-      updateCurrent(active);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          current.style.transition = prev;
-        });
-      });
-    };
+  
 
-    requestAnimationFrame(initCurrent);
 
     // ★ ページ遷移後にアクティブを更新 → CSS transition でスライドする
-    document.addEventListener('astro:after-swap', () => {
-      updateCurrent(resolveActiveLink());
+    // ★ 遷移開始時にアクティブを更新 → CSS transition がクリック直後から走る
+    document.addEventListener('astro:before-preparation', (event: any) => {
+    const toUrl: URL | undefined = event.to;
+    if (!toUrl) return;
+
+    const path = toUrl.pathname;
+    const target =
+      Array.from(links).find((link) => {
+        const href = link.getAttribute('href') ?? '';
+        const linkPath = href.split('#')[0] || '/';
+        return linkPath === path;
+      }) ??
+      Array.from(links).find((link) => {
+        const href = link.getAttribute('href') ?? '';
+        const linkPath = href.split('#')[0];
+        return linkPath && linkPath !== '/' && path.startsWith(`${linkPath}/`);
+      });
+
+      if (target) updateCurrent(target);
     });
 
     // 同ページ内 #anchor リンク用の即時反映
