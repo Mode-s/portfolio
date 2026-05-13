@@ -90,6 +90,7 @@
     if (sessionStorage.getItem('loaded') === 'true') {
 
       document.documentElement.removeAttribute('data-firstvisit');
+      document.body.style.overflow = '';
       loading.remove();
 
       requestAnimationFrame(() => {
@@ -113,6 +114,7 @@
       setTimeout(() => {
         loading.style.display = 'none';
         document.body.style.overflow = '';
+        document.documentElement.removeAttribute('data-firstvisit');
         window.dispatchEvent(new CustomEvent('loading:complete'));
       }, 1200);
     };

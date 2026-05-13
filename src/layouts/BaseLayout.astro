@@ -30,6 +30,7 @@ const { title } = Astro.props;
 		<script is:inline>
 			if (sessionStorage.getItem('loaded') === 'true') {
 				document.documentElement.dataset.loaded = 'true';
+				document.documentElement.removeAttribute('data-firstvisit');
 			} else {
 				document.documentElement.dataset.firstvisit = 'true';
 			}
