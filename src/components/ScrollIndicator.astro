@@ -1,0 +1,213 @@
+---
+
+// 目盛りの設定（刻みを変えたい時はここだけ修正）
+const MAJOR_STEP = 10; // 長メモリ：10% 刻み
+const MINOR_STEP = 2;  // 短メモリ：2% 刻み
+
+// 0〜100 を MAJOR_STEP / MINOR_STEP 刻みで配列化
+const majorTicks = Array.from(
+  { length: Math.floor(100 / MAJOR_STEP) + 1 },
+  (_, i) => i * MAJOR_STEP
+);
+
+// 短メモリは長メモリと重複しない位置だけ取る
+const minorTicks = Array.from(
+  { length: Math.floor(100 / MINOR_STEP) + 1 },
+  (_, i) => i * MINOR_STEP
+).filter((v) => v % MAJOR_STEP !== 0);
+---
+
+<aside class="scroll-indicator" data-js="scroll-indicator" aria-hidden="true" transition:persist>
+  <div class="scroll-indicator-inner">
+    <span class="scroll-indicator-line" aria-hidden="true"></span>
+
+    <ul class="scroll-indicator-ticks">
+      {majorTicks.map((value) => (
+        <li class="scroll-indicator-tick scroll-indicator-tick-major" style={`--y:${value}%`}></li>
+      ))}
+      {minorTicks.map((value) => (
+        <li class="scroll-indicator-tick scroll-indicator-tick-minor" style={`--y:${value}%`}></li>
+      ))}
+    </ul>
+
+    <div class="scroll-indicator-current" data-js="scroll-indicator-current">
+      <span class="scroll-indicator-current-line" aria-hidden="true"></span>
+      <span class="scroll-indicator-current-arrow" aria-hidden="true"></span>
+    </div>
+  </div>
+</aside>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  //──────────────────  Scroll indicator (container)  ──────────────────//
+  .scroll-indicator {
+    position: fixed;
+    top: 80px;
+    right: 0;
+    bottom: 40px;
+    z-index: $z-base + 1;
+    width: 20px; // ベース線(4px地点) + 長メモリ(12px) + 余白
+  }
+
+  //──────────────────  Scroll indicator inner  ──────────────────//
+  .scroll-indicator-inner {
+    position: relative; // 絶対配置する子要素の基準
+    width: 100%;
+    height: 100%;
+  }
+
+  //──────────────────  Scroll indicator line (縦のベースライン)  ──────────────────//
+  .scroll-indicator-line {
+    position: absolute;
+    top: 0;
+    right: 4px; // 画面端から4px内側
+    z-index: 0;
+    width: 0.5px;
+    height: 100%;
+    background-color: $c-text;
+    opacity: 0.35;
+  }
+
+  //──────────────────  Scroll indicator ticks (list container)  ──────────────────//
+  .scroll-indicator-ticks {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  //──────────────────  Scroll indicator tick (共通)  ──────────────────//
+  .scroll-indicator-tick {
+    position: absolute;
+    top: var(--y); // フロントマターから渡される 0%〜100% の値
+    right: 4px;    // ベース線と揃え、左方向に伸ばす
+    height: 0.5px;
+    background-color: $c-text;
+    transform: translateY(-50%); // 値の位置にメモリの中心を合わせる
+  }
+
+  //──────────────────  Scroll indicator tick - major (10%刻み)  ──────────────────//
+  .scroll-indicator-tick-major {
+    width: 12px;
+    opacity: 0.7;
+  }
+
+  //──────────────────  Scroll indicator tick - minor (2%刻み)  ──────────────────//
+  .scroll-indicator-tick-minor {
+    width: 4px;
+    opacity: 0.25;
+  }
+
+  //──────────────────  Scroll indicator current (インジケーター本体)  ──────────────────//
+  .scroll-indicator-current {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    width: 100%;
+    height: 0;
+    opacity: 0;
+    will-change: transform;
+    transition: opacity 0.4s ease;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  //──────────────────  Scroll indicator current line (横線)  ──────────────────//
+  .scroll-indicator-current-line {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    width: 20px; // 目盛りより長く伸ばすことで「今ここ」を強調
+    height: 0.5px;
+    background-color: $c-text;
+    opacity: 0.95;
+    transform: translateY(-50%); // 横線の中心をインジケーターの基準点に合わせる
+  }
+
+  //──────────────────  Scroll indicator current arrow (▶ 三角マーカー)  ──────────────────//
+  .scroll-indicator-current-arrow {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    width: 5px;
+    height: 8px;
+    background-color: $c-text;
+    opacity: 0.95;
+    clip-path: polygon(100% 0%, 100% 100%, 0% 50%);
+    transform: translateY(-50%);
+  }
+</style>
+
+<script>
+  // ──────────────────────────────────────────────────────────────
+  //  transition:persist のため、このスクリプトは初回ロード時に1度だけ実行される
+  // ──────────────────────────────────────────────────────────────
+
+  const indicator = document.querySelector<HTMLElement>('[data-js="scroll-indicator"]');
+  const current   = document.querySelector<HTMLElement>('[data-js="scroll-indicator-current"]');
+
+  if (indicator && current) {
+    const inner = indicator.querySelector<HTMLElement>('.scroll-indicator-inner');
+
+    if (inner) {
+      let rafId: number | null = null;
+
+      // ── スクロール進捗を計算してインジケーターを移動 ──
+      const update = () => {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+        // コンテンツがビューポートより短いページ（スクロール不要）は 0 固定
+        const progress = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0;
+
+        // ルーラーの高さ（px）× 進捗割合 = インジケーターの Y 座標
+        const y = progress * inner.clientHeight;
+        current.style.transform = `translateY(${y}px)`;
+
+        rafId = null;
+      };
+
+      // ── scroll を rAF でスロットリング（1フレーム1回に間引く）──
+      const onScroll = () => {
+        if (rafId !== null) return; // 既に次フレームが予約済みなら追加しない
+        rafId = requestAnimationFrame(update);
+      };
+
+      // ── 位置を確定させてからフェードイン（ちらつき防止）──
+      const show = () => {
+        update();                    // まず正しい位置に移動
+        current.style.opacity = '1'; // そのあとフェードイン
+      };
+
+      // ── スクロールリスナー（一度だけ登録）──
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // ── ウィンドウリサイズ時の再計算 ──
+      // ルーラーの clientHeight はビューポート高に依存するため再計算が必要
+      window.addEventListener('resize', update);
+
+      // ── ページ遷移後の再計算 ──
+      // ページが変わると scrollHeight が変わるため割合を取り直す
+      document.addEventListener('astro:page-load', update);
+
+      // ── ローディング連携 ──
+      const hasLoading   = document.querySelector('[data-js="loading"]');
+      const isFirstVisit = sessionStorage.getItem('loaded') !== 'true';
+
+      if (hasLoading && isFirstVisit) {
+        // 初回訪問：ローディング完了後に表示
+        window.addEventListener('loading:complete', show, { once: true });
+      } else {
+        // 再訪問・ローディングなし：即座に表示
+        show();
+      }
+    }
+  }
+</script>
