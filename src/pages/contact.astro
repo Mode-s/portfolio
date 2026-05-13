@@ -225,6 +225,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     letter-spacing: 0.06em;
     transition: border-color 0.2s ease;
 
+    @include sp {
+      font-size: 16px;
+    }
+
     &:focus {
       outline: none;
       border-color: $c-text;
