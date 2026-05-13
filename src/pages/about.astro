@@ -1,0 +1,360 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import profileImage from '../assets/images/profile.jpg';
+---
+
+<BaseLayout title="about | Umemoto Shota">
+  <section class="about-page">
+    <div class="about-page-inner">
+      <div class="about-page-content">
+        <p class="about-page-label" data-js="about-page-label">about</p>
+        <h1 class="about-page-title">about</h1>
+      </div>
+      <section class="about-page-section" aria-labelledby="about-profile-heading">
+        <div class="about-page-section-head">
+          <span class="about-page-section-num">01</span>
+          <h2 class="about-page-section-title" id="about-profile-heading">Profile</h2>
+        </div>
+        <div class="about-page-profile">
+          <figure class="about-page-profile-image">
+            <Image src={profileImage} alt="Mecha のプロフィール写真" />
+          </figure>
+          <div class="about-page-profile-body">
+            <p class="about-page-profile-name">Mecha</p>
+            <p class="about-page-profile-role">Front-end Developer</p>
+          </div>
+          <div class="about-page-profile-bio">
+            <p>はじめまして、Mecha です。東京を拠点に活動するフロントエンドエンジニアで、HTML / CSS / JavaScript を中心にウェブサイトを制作しています。</p>
+            <p>「触っていて気持ちのいい体験」を作ることに関心があり、レイアウトの整え方やアニメーションの間合いにこだわって日々学習を続けています。</p>
+            <p>制作したものを通して、見た人・使った人の毎日が少しでも軽やかになることを目標にしています。</p>
+          </div>
+        </div>
+        <dl class="about-page-profile-meta">
+          <div class="about-page-profile-meta-row">
+            <dt class="about-page-profile-meta-term">Based in</dt>
+            <dd class="about-page-profile-meta-desc">Tokyo, Japan</dd>
+          </div>
+          <div class="about-page-profile-meta-row">
+            <dt class="about-page-profile-meta-term">Born</dt>
+            <dd class="about-page-profile-meta-desc">2000</dd>
+          </div>
+          <div class="about-page-profile-meta-row">
+            <dt class="about-page-profile-meta-term">Experience</dt>
+            <dd class="about-page-profile-meta-desc">3 months</dd>
+          </div>
+        </dl>
+      </section>
+      <section class="about-page-section" aria-labelledby="about-likes-heading">
+        <div class="about-page-section-head">
+          <span class="about-page-section-num">02</span>
+          <h2 class="about-page-section-title" id=about-likes-heading>Likes &amp; Values</h2>
+        </div>
+        <div class="about-page-likes">
+          <h3 class="about-page-subheading">Things I Love</h3>
+          <ul class="about-page-likes-list">
+            <li class="about-page-likes-item">coffee</li>
+            <li class="about-page-likes-item">movies</li>
+            <li class="about-page-likes-item">reading</li>
+            <li class="about-page-likes-item">music</li>
+            <li class="about-page-likes-item">散歩</li>
+            <li class="about-page-likes-item">タイポグラフィ</li>
+            <li class="about-page-likes-item">古い建物</li>
+            <li class="about-page-likes-item">クジラ</li>
+          </ul>
+        </div>
+        <div class="about-page-values">
+          <h3 class="about-page-subheading">Values</h3>
+          <dl class="about-page-values-list">
+            <div class="about-page-values-item">
+              <dt class="about-page-values-term">細部に宿るもの</dt>
+              <dd class="about-page-values-desc">余白の取り方、アニメーションの間合い、フォントの選び方。小さな積み重ねが全体の印象を決めると信じています。</dd>
+            </div>
+            <div class="about-page-values-item">
+              <dt class="about-page-values-term">使う人のリズム</dt>
+              <dd class="about-page-values-desc">技術的な正しさよりも、触れる人にとっての心地よさを優先したい。読み込みの早さも、操作感も、すべて体験の一部です。</dd>
+            </div>
+            <div class="about-page-values-item">
+              <dt class="about-page-values-term">学び続ける姿勢</dt>
+              <dd class="about-page-values-desc">経験が浅いからこそ、毎日少しずつでも前に進む。昨日できなかったことが今日できるようになる、その喜びを大切にしています。</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  @use '../styles/variables' as *;
+  @use '../styles/mixins' as *;
+
+  //──────────────────  About page  ──────────────────//
+  .about-page {
+    padding: 120px 40px 80px;
+
+    @include tablet {
+      padding: 100px 32px 60px;
+    }
+
+    @include sp {
+      padding: 80px 20px 40px;
+    }
+  }
+
+  //──────────────────  About page inner  ──────────────────//
+  .about-page-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  //──────────────────  About page content  ──────────────────//
+  .about-page-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  //──────────────────  About page label  ──────────────────//
+  .about-page-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  About page title  ──────────────────//
+  .about-page-title {
+    font-family: 'Libre Barcode 39', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+
+    @include sp {
+      font-size: 2.5rem;
+    }
+  }
+
+  //──────────────────  About page section  ──────────────────//
+  .about-page-section {
+    margin-top: 100px;
+
+    @include tablet {
+      margin-top: 80px;
+    }
+
+    @include sp {
+      margin-top: 60px;
+    }
+  }
+
+  //──────────────────  About page section head ──────────────────//
+  .about-page-section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 0.5px solid rgba(204, 200, 190, 0.3);
+  }
+
+  //──────────────────  About page section num  ──────────────────//
+  .about-page-section-num {
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+  }
+
+  //──────────────────  About page section title ──────────────────//
+  .about-page-section-title {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  //──────────────────  About page profile  ──────────────────//
+  .about-page-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    margin-top: 40px;
+
+    @include tablet {
+      gap: 40px;
+    }
+  }
+
+  //──────────────────  About page profile image ──────────────────//
+  .about-page-profile-image {
+    flex-shrink: 0;
+    width: 320px;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border: 0.5px solid $c-text;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @include tablet {
+      width: 260px;
+    }
+
+    @include sp {
+      width: 220px;
+    }
+  }
+
+  //──────────────────  About page profile body  ──────────────────//
+  .about-page-profile-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 24px;
+  }
+
+  //──────────────────  About page profile name  ──────────────────//
+  .about-page-profile-name {
+    font-size: 1.25rem;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+  }
+
+  //──────────────────  About page profile role  ──────────────────//
+  .about-page-profile-role {
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  //──────────────────  About page profile bio  ──────────────────//
+  .about-page-profile-bio {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+
+    p {
+      font-size: 0.875rem;
+      line-height: 2;
+      letter-spacing: 0.06em;
+      opacity: 0.8;
+    }
+  }
+
+  //──────────────────  About page profile meta  ──────────────────//
+  .about-page-profile-meta {
+    border-top: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-bottom: 0.5px solid rgba(204, 200, 190, 0.3);
+    margin-top: 16px;
+  }
+
+  //──────────────────  About page profile meta row  ──────────────────//
+  .about-page-profile-meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 12px 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+
+    & + & {
+      border-top: 0.5px solid rgba(204, 200, 190, 0.15);
+    }
+  }
+
+  //──────────────────  About meta term  ──────────────────//
+  .about-page-profile-meta-term {
+    flex-shrink: 0;
+    width: 100px;
+    opacity: 0.6;
+
+    @include sp {
+      width: 80px;
+    }
+  }
+
+  //──────────────────  About meta desc  ──────────────────//
+  .about-page-profile-meta-desc {
+    flex: 1;
+  }
+
+  .about-page-subheading {
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .about-page-likes {
+    margin-top: 40px;
+  }
+
+  .about-page-likes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .about-page-likes-item {
+    padding: 6px 14px;
+    border: 0.5px solid rgba(204, 200, 190, 0.3);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+  }
+
+  .about-page-values {
+    margin-top: 60px;
+
+    @include sp {
+      margin-top: 40px;
+    }
+  }
+
+  .about-page-values-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 20px;
+  }
+
+  .about-page-values-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .about-page-values-term {
+    font-size: 0.9375rem;
+    letter-spacing: 0.08em;
+    font-weight: normal;
+  }
+
+  .about-page-values-desc {
+    font-size: 0.8125rem;
+    line-height: 2;
+    letter-spacing: 0.06em;
+    opacity: 0.75;
+  }
+
+</style>
+
+<script>
+  import { scramble } from '../utils/scramble';
+
+  const initAboutPage = () => {
+    const label = document.querySelector<HTMLElement>('[data-js="about-page-label"]');
+    if (!label) return;
+
+    if (sessionStorage.getItem('loaded') === 'true') {
+      scramble(label, 800, 0);
+    } else {
+      window.addEventListener('loading:complete', () => scramble(label, 800, 0), { once: true });
+    }
+  };
+
+  document.addEventListener('astro:page-load', initAboutPage);
+</script>
