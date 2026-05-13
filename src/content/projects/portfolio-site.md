@@ -1,5 +1,6 @@
 ---
 title: "Portfolio Site"
+description: "Astro と TypeScript で制作したポートフォリオサイト。Content Collections を使ったプロジェクト管理について。"
 date: "2024-11"
 type: "self"
 tech: ["Astro", "TypeScript", "SCSS"]

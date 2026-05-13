@@ -8,19 +8,63 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ScrollIndicator from '../components/ScrollIndicator.astro';
 
+interface Props {
+	title: string;
+	description?: string;
+	ogImage?: string;
+	noindex?: boolean;
+}
 
-const { title } = Astro.props;
+const {
+	title,
+	description = 'Tokyo を拠点に活動するフロントエンドエンジニア Mecha のポートフォリオサイトです。',
+	ogImage = '/images/og-image.jpg',
+	noindex = false,
+} = Astro.props;
+
+const siteName = 'Mecha Portfolio';
+const siteUrl = 'https://umemoto.pages.dev/'; // 正しいURLに変更必要
+
+// 現在ページの絶対URL（canonical / og:url 用）
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const ogImageUrl = new URL(ogImage, siteUrl).href;
 ---
 
 <html lang="ja">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
+		<!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <!-- iOS用にも用意するなら -->
+    <!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
+		<meta name="viewport" content="width=device-width=1" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{ title }</title>
 
+		<title>{ title }</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+		<!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="ja_JP" />
+
+		<!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <!-- ※ Twitterアカウントがあれば下も追加 -->
+    <meta name="twitter:site" content="@_mechaxx" />
+    <meta name="twitter:creator" content="@_mechaxx" />
+
+		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap" rel="stylesheet">

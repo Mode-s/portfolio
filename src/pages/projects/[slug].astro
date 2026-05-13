@@ -24,7 +24,8 @@ const typeLabels = {
 const formatDate = (date: string) => date.replace('-', '.');
 ---
 
-<BaseLayout title={`${project.data.title} | Mecha`}>
+<BaseLayout title={`${project.data.title} | Mecha`} description={project.data.description ?? `${project.data.title}のプロジェクト詳細ページです。`}
+ogImage={project.data.thumbnail.src}>
   <article class="project-detail">
 
     <a class="project-detail-back" href="/projects">← Projects</a>

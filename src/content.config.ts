@@ -22,6 +22,9 @@ const projects = defineCollection({
     // プロジェクト名
     title: z.string(),
 
+    
+    description: z.string().optional(),
+
     // 制作年月（"2024-10" 形式）
     date: z.string(),
 

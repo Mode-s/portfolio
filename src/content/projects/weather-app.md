@@ -1,5 +1,6 @@
 ---
 title: "Weather App"
+description: "Astro と TypeScript で制作したポートフォリオサイト。Content Collections を使ったプロジェクト管理について。"
 date: "2024-08"
 type: "self"
 tech: ["HTML", "CSS", "JavaScript"]
