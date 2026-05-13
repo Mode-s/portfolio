@@ -4,6 +4,6 @@ import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com', // 正しいURLに変更必要
+  site: 'https://umemoto.pages.dev', // 正しいURLに変更必要
   integrations: [icon()],
 });

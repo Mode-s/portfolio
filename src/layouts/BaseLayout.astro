@@ -23,7 +23,7 @@ const {
 } = Astro.props;
 
 const siteName = 'Mecha Portfolio';
-const siteUrl = 'https://umemoto.pages.dev/'; // 正しいURLに変更必要
+const siteUrl = 'https://umemoto.pages.dev'; // 正しいURLに変更必要
 
 // 現在ページの絶対URL（canonical / og:url 用）
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
@@ -38,7 +38,7 @@ const ogImageUrl = new URL(ogImage, siteUrl).href;
     <link rel="icon" href="/favicon.ico" />
     <!-- iOS用にも用意するなら -->
     <!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
-		<meta name="viewport" content="width=device-width=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 
 		<title>{ title }</title>
