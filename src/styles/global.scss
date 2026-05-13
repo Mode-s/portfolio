@@ -9,6 +9,11 @@ body {
   color: $c-text;
   font-size: $f-base;
   line-height: 1.8;
+  scrollbar-width: none; // ← 追加（Firefox）
+
+  &::-webkit-scrollbar {
+    display: none; // ← 追加（Chrome / Safari / Edge）
+  }
 }
 
 img {
