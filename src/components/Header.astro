@@ -360,7 +360,6 @@
         return;
       }
 
-      // 初回（prevW が 0）はアニメなしで即配置
       if (prevW === 0) {
         prevX = nextX;
         prevW = nextW;
@@ -368,7 +367,6 @@
       }
 
       // Web Animations API でアニメーション
-      // DOM 再アタッチを越えて生き残るので transition:persist と相性が良い
       currentAnimation = current.animate(
         [
           { transform: `translateX(${prevX}px)`, width: `${prevW}px` },
@@ -385,7 +383,7 @@
       prevW = nextW;
     };
 
-    // 現在のURLからアクティブにすべきリンクを判定
+    // 現在のURLからリンクを判定
     const resolveActiveLink = (): HTMLAnchorElement => {
       const path = window.location.pathname;
 
@@ -408,9 +406,6 @@
       return links[0];
     };
 
-  
-    // ★ ページ遷移後にアクティブを更新 → CSS transition でスライドする
-    // ★ 遷移開始時にアクティブを更新 → CSS transition がクリック直後から走る
     document.addEventListener('astro:before-preparation', (event: any) => {
     const toUrl: URL | undefined = event.to;
     if (!toUrl) return;
@@ -431,18 +426,15 @@
       if (target) updateCurrent(target);
     });
 
-    // 初期位置をセット（prevW === 0 なのでアニメなしで配置される）
     const initialTarget = resolveActiveLink();
     updateCurrent(initialTarget);
 
-    // 同ページ内 #anchor リンク用の即時反映
     links.forEach((link) => {
       link.addEventListener('click', () => {
         const href = link.getAttribute('href') ?? '';
         const linkPath = href.split('#')[0] || '/';
         const currentPath = window.location.pathname;
 
-        // 同じパスへの遷移（= ハッシュリンクなど）のときだけ即時更新
         if (linkPath === currentPath) {
           updateCurrent(link);
         }
@@ -454,7 +446,6 @@
       if (active) updateCurrent(active);
     });
 
-    // ナビゲーションのスクランブル(初回のみ)
     const fireNavScramble = () => {
       links.forEach((link, i) => {
         scramble(link, 500, i * 100);
@@ -471,9 +462,7 @@
     }
   };
 
-  // ─────────────────────────────────────────
-  //  ハンバーガー / オーバーレイ
-  // ─────────────────────────────────────────
+  //  ───────────────── ハンバーガー / オーバーレイ ────────────────────
   const initHamburger = () => {
     const hamburger = document.querySelector<HTMLButtonElement>('[data-js="header-hamburger"]');
     const overlay = document.querySelector<HTMLElement>('[data-js="header-overlay"]');
@@ -520,13 +509,11 @@
       }
     });
 
-    // ページ遷移時にオーバーレイが開いていれば閉じる
     document.addEventListener('astro:after-swap', () => {
       if (hamburger.classList.contains('is-open')) close();
     });
   };
 
-  // ヘッダーは transition:persist で保持されるため、初期化は1回のみで良い
   initHeaderNav();
   initHamburger();
 </script>

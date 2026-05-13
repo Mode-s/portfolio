@@ -85,15 +85,13 @@
   const initLoading = () => {
     const loading = document.querySelector<HTMLElement>('[data-js="loading"]');
 
-    // homeページ以外（Loading要素が存在しないページ）では何もしない
     if (!loading) return;
 
-    // すでにこのセッションで一度ローディング済みの場合
     if (sessionStorage.getItem('loaded') === 'true') {
-      // view transitions で<html>属性が残るので明示的に削除
+
       document.documentElement.removeAttribute('data-firstvisit');
       loading.remove();
-      // 同フレーム内のリスナー登録に間に合うように1フレーム遅延
+
       requestAnimationFrame(() => {
         window.dispatchEvent(new CustomEvent('loading:complete'));
       });

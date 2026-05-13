@@ -109,7 +109,6 @@
       if (scroll) scramble(scroll, 1200, 200);
     };
 
-    // 初回はloading完了を待つ。訪問済みセッションでは即発火
     if (sessionStorage.getItem('loaded') === 'true') {
       fire();
     } else {
