@@ -18,12 +18,12 @@ interface Props {
 const {
 	title,
 	description = 'Tokyo を拠点に活動するフロントエンドエンジニア Mecha のポートフォリオサイトです。',
-	ogImage = '/images/og-image.png',
+	ogImage = '/images/hero.jpg',
 	noindex = false,
 } = Astro.props;
 
 const siteName = 'Mecha Portfolio';
-const siteUrl = 'https://umemoto.pages.dev'; // 正しいURLに変更必要
+const siteUrl = Astro.site ?? new URL(Astro.url.origin); // 正しいURLに変更必要
 
 // 現在ページの絶対URL（canonical / og:url 用）
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
