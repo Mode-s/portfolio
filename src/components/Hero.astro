@@ -7,10 +7,10 @@
   </a>
   <div class="hero-inner">
     <div class="hero-content">
-      <div class="label">portfolio</div>
-      <h1 class="title">mecha</h1>
+      <div class="label" data-js="hero-label">portfolio</div>
+      <h1 class="title">Mecha</h1>
     </div>
-    <p class="hero-scroll" aria-hidden="true">SCROLL</p>
+    <p class="hero-scroll" data-js="hero-scroll" aria-hidden="true">SCROLL</p>
   </div>
 </section>
 
@@ -94,8 +94,8 @@
   import { scramble } from '../utils/scramble';
 
   const initHero = () => {
-    const label = document.querySelector<HTMLElement>('.label');
-    const scroll = document.querySelector<HTMLElement>('.hero-scroll');
+    const label = document.querySelector<HTMLElement>('[data-js="hero-label"]');
+    const scroll = document.querySelector<HTMLElement>('[data-js="hero-scroll"]');
 
     if (!label && !scroll) return;
 
