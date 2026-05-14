@@ -2,10 +2,10 @@
 @use 'mixins' as *;
 html {
   scroll-behavior: smooth;
-  scrollbar-width: none; // ← 追加（Firefox）
+  scrollbar-width: none; // ←（Firefox）
 
   &::-webkit-scrollbar {
-    display: none; // ← 追加（Chrome / Safari / Edge）
+    display: none; // ←（Chrome / Safari / Edge）
   }
 }
 
@@ -14,10 +14,10 @@ body {
   color: $c-text;
   font-size: $f-base;
   line-height: 1.8;
-  scrollbar-width: none; // ← 追加（Firefox）
+  scrollbar-width: none; // ←（Firefox）
 
   &::-webkit-scrollbar {
-    display: none; // ← 追加（Chrome / Safari / Edge）
+    display: none; // ←（Chrome / Safari / Edge）
   }
 }
 
