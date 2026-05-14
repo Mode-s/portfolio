@@ -221,12 +221,6 @@ const minorTicks = Array.from(
         update();
       });
 
-      // ── ページ遷移後の再計算 ──
-      // ページが変わると scrollHeight が変わるため割合を取り直す
-      document.addEventListener('astro:page-load', () => {
-        recalcSizes();
-        update();
-      });
 
       // ── ローディング連携 ──
       const hasLoading   = document.querySelector('[data-js="loading"]');
