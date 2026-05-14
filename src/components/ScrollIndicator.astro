@@ -46,7 +46,7 @@ const minorTicks = Array.from(
     position: fixed;
     top: 150px;
     right: 0;
-    height: 300px;
+    bottom: 40px;
     z-index: $z-base + 1;
     width: 20px; // ベース線(4px地点) + 長メモリ(12px) + 余白
   }
@@ -201,6 +201,22 @@ const minorTicks = Array.from(
       // ── ウィンドウリサイズ時の再計算 ──
       // ルーラーの clientHeight はビューポート高に依存するため再計算が必要
       window.addEventListener('resize', () => {
+        recalcSizes();
+        update();
+      });
+
+      // ── URL バー開閉時の再計算（モバイル対応）──
+      // window.resize はモバイルの URL バー開閉で発火しないことがあるため、
+      // visualViewport で表示領域の変化を捕まえる
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+        recalcSizes();
+        update();
+        });
+      }
+
+      // ── ページ遷移後の再計算 ──
+      document.addEventListener('astro:page-load', () => {
         recalcSizes();
         update();
       });
