@@ -8,8 +8,6 @@ export const CATEGORIES = [
   'illust',
   'logo',
   'ui design',
-  'animation',
-  'graphic',
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
