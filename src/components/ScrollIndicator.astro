@@ -159,17 +159,25 @@ const minorTicks = Array.from(
 
     if (inner) {
       let rafId: number | null = null;
+      let maxScroll = 0;    // スクロール可能量のキャッシュ
+      let rulerHeight = 0;  // ルーラー高さのキャッシュ
+
+      // ── サイズ系を再計算（resize / ページ遷移時のみ呼ぶ）──
+      // スクロール中に呼ぶと URL バー伸縮で値が揺れてカクつくため、
+      // タイミングを限定してキャッシュしておく
+      const recalcSizes = () => {
+        maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        rulerHeight = inner.clientHeight;
+      };
 
       // ── スクロール進捗を計算してインジケーターを移動 ──
       const update = () => {
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
         // コンテンツがビューポートより短いページ（スクロール不要）は 0 固定
         const progress = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0;
 
         // ルーラーの高さ（px）× 進捗割合 = インジケーターの Y 座標
-        const y = progress * inner.clientHeight;
-        current.style.transform = `translateY(${y}px)`;
+        const y = progress * rulerHeight;
+        current.style.transform = `translate3d(0, ${y}px, 0)`;
 
         rafId = null;
       };
@@ -182,6 +190,7 @@ const minorTicks = Array.from(
 
       // ── 位置を確定させてからフェードイン（ちらつき防止）──
       const show = () => {
+        recalcSizes();               // サイズをキャッシュ
         update();                    // まず正しい位置に移動
         current.style.opacity = '1'; // そのあとフェードイン
       };
@@ -191,11 +200,17 @@ const minorTicks = Array.from(
 
       // ── ウィンドウリサイズ時の再計算 ──
       // ルーラーの clientHeight はビューポート高に依存するため再計算が必要
-      window.addEventListener('resize', update);
+      window.addEventListener('resize', () => {
+        recalcSizes();
+        update();
+      });
 
       // ── ページ遷移後の再計算 ──
       // ページが変わると scrollHeight が変わるため割合を取り直す
-      document.addEventListener('astro:page-load', update);
+      document.addEventListener('astro:page-load', () => {
+        recalcSizes();
+        update();
+      });
 
       // ── ローディング連携 ──
       const hasLoading   = document.querySelector('[data-js="loading"]');
