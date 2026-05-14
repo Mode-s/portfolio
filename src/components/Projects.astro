@@ -182,8 +182,6 @@ const formatDate = (date: string) => date.replace('-', '.');
     const label = document.querySelector<HTMLElement>('[data-js="projects-label"]');
     if (label) scrambleOnVisible(label);
   };
- 
-document.addEventListener('astro:page-load', initProjects);
 
   document.addEventListener('astro:page-load', initProjects);
 </script>
