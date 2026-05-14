@@ -1,7 +1,18 @@
 ---
+import { Image } from 'astro:assets';
+import heroImage from '../assets/images/hero.jpg';
 ---
 
 <section class="hero">
+  <Image
+    src={heroImage}
+    alt=""
+    class="hero-bg"
+    widths={[768, 1280, 1920]}
+    sizes="100vw"
+    loading="eager"
+    aria-hidden="true"
+  />
   <a href="/" class="hero-logo" aria-label="ホームへ戻る">
     <img class="hero-logo-image" src="/images/logo3.svg" alt="ロゴ" />
   </a>
@@ -23,9 +34,6 @@
 		position: relative;
 		width: 100%;
 		height: 100svh;
-		background-image: url('/images/hero.jpg');
-		background-size:  cover;
-		background-position: center;
 		overflow: hidden;
 
     &::before {
@@ -40,6 +48,18 @@
       background-color: rgba(10, 10, 8, 0.3);
     }
 	}
+  //――――――――――――――――――――――――――　Hero bg ――――――――――――――――――――――――――――//
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
   //――――――――――――――――――――――――――　Hero Logo ――――――――――――――――――――――――――――//
   .hero-logo {
     position: absolute;

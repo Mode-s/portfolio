@@ -1,6 +1,17 @@
 ---
+import { Image } from 'astro:assets';
+import footerBgImage from '../assets/images/footer-bg.jpg';
 ---
 <footer class="footer">
+  <Image
+    src={footerBgImage}
+    alt=""
+    class="footer-bg"
+    widths={[768, 1280]}
+    sizes="100vw"
+    loading="lazy"
+    aria-hidden="true"
+  />
   <ul class="footer-sns">
     <li>
       <a class="footer-sns-link" href="https://x.com/_mechaxx" target="_blank" rel="noopener noreferrer">
@@ -36,9 +47,6 @@
   //──────────────────  Footer  ──────────────────//
   .footer {
     position: relative;
-    background-image: url('/images/footer-bg.jpg');
-    background-size: cover;
-    background-position: center;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,11 +58,23 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 0;
+      z-index: 1;
       width: 100%;
       height: 100%;
       background-color: rgba(22, 22, 22, 0.6);
     }
+  }
+
+  //──────────────────  Footer bg  ──────────────────//
+  .footer-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   //──────────────────  Footer sns  ──────────────────//
