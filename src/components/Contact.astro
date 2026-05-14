@@ -117,23 +117,10 @@
 </style>
 
 <script>
-  import { scramble } from '../utils/scramble';
+  import { scrambleOnVisible } from '../utils/scramble';
 
-  const initContact = () => {
+  document.addEventListener('astro:page-load', () => {
     const label = document.querySelector<HTMLElement>('[data-js="contact-label"]');
-    if (!label) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          scramble(label, 800, 0);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-
-    observer.observe(label);
-  };
-
-  document.addEventListener('astro:page-load', initContact);
+    if (label) scrambleOnVisible(label);
+  });
 </script>

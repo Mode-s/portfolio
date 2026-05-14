@@ -164,23 +164,10 @@ import { Icon } from 'astro-icon/components';
 </style>
 
 <script>
-  import { scramble } from '../utils/scramble';
+  import { scrambleOnVisible } from '../utils/scramble';
 
-  const initSkills = () => {
+  document.addEventListener('astro:page-load', () => {
     const label = document.querySelector<HTMLElement>('[data-js="skills-label"]');
-    if (!label) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          scramble(label, 800, 0);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-
-    observer.observe(label);
-  };
-
-  document.addEventListener('astro:page-load', initSkills);
+    if (label) scrambleOnVisible(label);
+  });
 </script>

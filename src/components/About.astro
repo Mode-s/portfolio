@@ -183,23 +183,10 @@ import profileImage from '../assets/images/profile.jpg';
 </style>
 
 <script>
-  import { scramble } from '../utils/scramble';
+  import { scrambleOnVisible } from '../utils/scramble';
 
-  const initAbout = () => {
+  document.addEventListener('astro:page-load', () => {
     const label = document.querySelector<HTMLElement>('[data-js="about-label"]');
-    if (!label) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          scramble(label, 800, 0);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-
-    observer.observe(label);
-  };
-
-  document.addEventListener('astro:page-load', initAbout);
+    if (label) scrambleOnVisible(label);
+  });
 </script>

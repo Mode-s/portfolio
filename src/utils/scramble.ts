@@ -75,3 +75,32 @@ export const scramble = (
     }, delay);
   });
 };
+
+interface ScrambleOnVisibleOptions {
+  duration?: number;
+  delay?: number;
+  threshold?: number;
+}
+ 
+/**
+ * 要素がビューポートに入ったタイミングで scramble を1度だけ実行する
+ * IntersectionObserver のセットアップを各コンポーネントで繰り返さないための共通処理
+ */
+export const scrambleOnVisible = (
+  el: HTMLElement,
+  { duration = 800, delay = 0, threshold = 0.3 }: ScrambleOnVisibleOptions = {}
+): void => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          scramble(el, duration, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold }
+  );
+ 
+  observer.observe(el);
+};

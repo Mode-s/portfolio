@@ -176,23 +176,14 @@ const formatDate = (date: string) => date.replace('-', '.');
 </style>
 
 <script>
-  import { scramble } from '../utils/scramble';
+  import { scrambleOnVisible } from '../utils/scramble';
 
   const initProjects = () => {
     const label = document.querySelector<HTMLElement>('[data-js="projects-label"]');
-    if (!label) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          scramble(label, 800, 0);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-
-    observer.observe(label);
+    if (label) scrambleOnVisible(label);
   };
+ 
+document.addEventListener('astro:page-load', initProjects);
 
   document.addEventListener('astro:page-load', initProjects);
 </script>
