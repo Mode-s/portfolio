@@ -22,8 +22,8 @@ const formatDate = (date: string) => date.replace('-', '.');
   <section class="projects-index">
     <div class="projects-index-inner">
       <div class="projects-index-content">
-        <p class="projects-index-label" data-js="projects-index-label">projects</p>
-        <h1 class="projects-index-title">projects</h1>
+        <p class="label" data-js="projects-index-label">projects</p>
+        <h1 class="title">projects</h1>
       </div>
       <div class="projects-index-filter" role="group" aria-label="カテゴリで絞り込み">
         <button
@@ -113,21 +113,12 @@ const formatDate = (date: string) => date.replace('-', '.');
 
   //──────────────────  Projects index label  ──────────────────//
   .projects-index-label {
-    font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
+    // 共通化した
   }
 
   //──────────────────  Projects index title  ──────────────────//
   .projects-index-title {
-    font-family: 'Libre Barcode 39', cursive;
-    font-size: 3.5rem;
-    letter-spacing: 0.04em;
-    line-height: 1.2;
-
-    @include sp {
-      font-size: 2.5rem;
-    }
+    // 共通化した
   }
 
   //──────────────────  Projects index filter  ──────────────────//

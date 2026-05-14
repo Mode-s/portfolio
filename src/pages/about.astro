@@ -8,8 +8,8 @@ import profileImage from '../assets/images/profile.jpg';
   <section class="about-page">
     <div class="about-page-inner">
       <div class="about-page-content">
-        <p class="about-page-label" data-js="about-page-label">about</p>
-        <h1 class="about-page-title">about</h1>
+        <p class="label" data-js="about-page-label">about</p>
+        <h1 class="title">about</h1>
       </div>
       <section class="about-page-section" aria-labelledby="about-profile-heading">
         <div class="about-page-section-head">
@@ -116,21 +116,12 @@ import profileImage from '../assets/images/profile.jpg';
 
   //──────────────────  About page label  ──────────────────//
   .about-page-label {
-    font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
+    // 共通化した
   }
 
   //──────────────────  About page title  ──────────────────//
   .about-page-title {
-    font-family: 'Libre Barcode 39', cursive;
-    font-size: 3.5rem;
-    letter-spacing: 0.04em;
-    line-height: 1.2;
-
-    @include sp {
-      font-size: 2.5rem;
-    }
+    // 共通化した
   }
 
   //──────────────────  About page section  ──────────────────//
