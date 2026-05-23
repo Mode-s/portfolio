@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://umemoto.pages.dev/sitemap-index.xml
+Sitemap: https://mexcha.pages.dev/sitemap-index.xml
