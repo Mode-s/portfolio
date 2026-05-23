@@ -23,7 +23,7 @@ const {
 } = Astro.props;
 
 const siteName = 'Mecha Portfolio';
-const siteUrl = Astro.site ?? new URL(Astro.url.origin); // 正しいURLに変更必要
+const siteUrl = Astro.site!;  // 正しいURLに変更必要
 
 // 現在ページの絶対URL（canonical / og:url 用）
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;

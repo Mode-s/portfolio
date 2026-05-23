@@ -6,4 +6,6 @@ import icon from 'astro-icon';
 export default defineConfig({
   site: 'https://mexcha.pages.dev', // 正しいURLに変更必要
   integrations: [icon()],
+  trailingSlash: 'never',
+  build: { format: 'file' },
 });
